@@ -17,7 +17,7 @@ struct OBJECT
 
 
 
-
+OBJECT *newelement(OBJECT temp);
 OBJECT *addfront(OBJECT *head, OBJECT *newp);
 OBJECT *addend (OBJECT *head, OBJECT *newp);
 OBJECT *addmiddle (OBJECT *head, OBJECT *newp);
