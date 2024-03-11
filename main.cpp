@@ -26,6 +26,7 @@ struct Sprite
 enum SHIPSTATE {HALTED, UTHRUST, DTHRUST, LTHRUST, RTHRUST, DAMAGED};
 enum SHIPSTATE ShipState;
 SDL_Event ev;
+bool KeyPressed=false;
 SDL_Renderer *gRen;
 SDL_Window *gWin;
 SDL_Surface* background,*ast1,*ast2,*ast3;
@@ -36,6 +37,12 @@ OBJECT *asteroids;
 Sprite shipSprite[9];
 bool explosion=false;
 int lastX,lastY,lastAngle;
+bool momentum=false;
+bool reversed=false;
+bool shipstill=false;
+double velocity = SPEED;
+double shipShootTime, timeTemp=0;
+
 //...................//
 /*Function prototypes*/
 //...................//
@@ -51,6 +58,8 @@ void HandleKeys(long sym, bool down);
 void NewGame();
 void addAsteroid(int X,int Y,int DIRX, int DIRY, int size);
 void moveship(int speed);
+bool lerp(double *value, double *time, int ms);
+SDL_Rect getRect(OBJECT *obj);
 void Draw(int X, int Y, SDL_Surface *img);
 void DrawObject(OBJECT object);
 void DrawDynamicObject(OBJECT* object);
@@ -77,6 +86,21 @@ double coswithdegree(int degree)
 {
     double rad=degree*PI/180;
     return cos(rad);
+}
+bool Collided(SDL_Rect a, SDL_Rect b)
+{
+    int leftA,rightA,bottomA,topA;
+    int leftB,rightB,bottomB,topB;
+    leftA = a.x;
+    rightA= a.x+a.w;
+    topA = a.y;
+    bottomA= a.y+a.h;
+
+    leftB = b.x;
+    rightB= b.x+b.w;
+    topB = b.y;
+    bottomB= b.y+b.h;
+    return bottomA>topB && topA<bottomB && rightA>leftB && leftA<rightB;
 }
 bool InitVideo()
 {
@@ -132,9 +156,11 @@ void HandleEvents()
                 break;
             case SDL_KEYDOWN:
                 HandleKey(e.key.keysym.sym,true);
+                KeyPressed=true;
                 break;
             case SDL_KEYUP:
                 HandleKey(e.key.keysym.sym,false);
+                KeyPressed=false;
                 break;
             default:
                 break;
@@ -155,7 +181,7 @@ void NewGame()
     ship.H = 70;
     ship.Angle = 0;  
     lastAngle = ship.Angle;
-    for(int i=0;i<2;i++)
+    for(int i=0;i<10;i++)
     {
         a = rand() % 2;
         if (a==0) tDIRX = 1;
@@ -210,17 +236,18 @@ void addAsteroid(int X,int Y,int DIRX, int DIRY, int size)
    temp.Y = Y;
    temp.DX = temp.X;
    temp.DY = temp.Y;
-   if (size==0){
+   temp.size=size;
+   if (temp.size==0){
      temp.W = ASTH0;
      temp.H = ASTW0;
      temp.Img=ast2;
    } 
-   if(size==1) {
+   if(temp.size==1) {
      temp.W = ASTH1;
      temp.H = ASTW1;
      temp.Img=ast1;
    }
-   if(size==2){
+   if(temp.size==2){
      temp.W = ASTH2;
      temp.H = ASTW2; 
      temp.Img=ast3;
@@ -229,6 +256,11 @@ void addAsteroid(int X,int Y,int DIRX, int DIRY, int size)
     asteroids = addend(asteroids, newelement(temp)); 
 }
 /* Draw Function*/
+SDL_Rect getRect(OBJECT *obj)
+{
+    SDL_Rect t={obj->X+10,obj->Y+10,obj->W-20,obj->H-20};
+    return t;
+}
 void Draw(int X, int Y, SDL_Surface *img)
 {
     SDL_Rect r;
@@ -296,10 +328,21 @@ void DrawScreen()
         case RTHRUST: ship.Img = shipSprite[5].img; break;			        
         case DAMAGED: a=rand() & 1; ship.Img = shipSprite[a+7].img; break;			        
     }
-    if(!explosion) DrawObject(ship);
+    SDL_Rect rShip, rAst;
+
+    if(!explosion){
+        rShip=getRect(&ship);
+        SDL_SetRenderDrawColor( gRen, 0x00, 0xFF, 0x00, 0xFF );
+        SDL_RenderDrawRect(gRen, &rShip);
+        DrawObject(ship);
+
+    }
     if (asteroids != NULL) {
         for (int i=0;i<length(&asteroids);i++){
             DrawDynamicObject(getObject(asteroids,i));
+            rAst=getRect(getObject(asteroids,i));
+            SDL_SetRenderDrawColor( gRen, 0x00, 0xFF, 0x00, 0xFF );
+            SDL_RenderDrawRect(gRen, &rAst);
         }
     }
     SDL_RenderPresent(gRen);
@@ -320,14 +363,54 @@ void rotateBy(OBJECT *Object, float D){
       Object->Angle = Object->Angle * -1;  
     }
 }
+void ShipUpdate()
+{
+    if(momentum==true) 
+    {
+        momentum=lerp(&velocity,&timeTemp,100);
+        if(reversed==false) moveship(-velocity);
+        else moveship(velocity);
+    }
+    else{
+        velocity=SPEED;
+    }
+    if (ship.Y < -10) {ship.Y = SCREEN_H; ship.DY = SCREEN_H;}
+    if (ship.Y > SCREEN_H+10) {ship.Y = 0; ship.DY = 0;}
+    if (ship.X > SCREEN_W + 10) {ship.X = 0; ship.DX = 0;}
+    if (ship.X < -10) {ship.X = SCREEN_W; ship.DX = SCREEN_W;}
+    
+}
 void moveAsteroid()
 {
-    OBJECT *p;
+    OBJECT *p,*q;
     for(int i=0;i<length(&asteroids);i++)
     {
         p=getObject(asteroids,i);
-        p->DX=p->DX + (1 * p->DIRX);
-        p->DY=p->DY + (1 * p->DIRY);
+        SDL_Rect rShip, rAst1, rAst2;
+        rShip=getRect(&ship);
+        rAst1=getRect(p);
+        if(Collided(rShip,rAst1))
+        {
+            ShipState=DAMAGED;
+            p->DIRX*=-1;
+            p->DIRY*=-1;
+        }
+        for(int j=0;j<length(&asteroids);j++)
+        {
+            q=getObject(asteroids,j);
+            rAst2=getRect(q);
+            if(p!=q){           
+                if(Collided(rAst1,rAst2))
+                {
+                        p->DIRX*=-1;
+                        p->DIRY*=-1;
+                        q->DIRX*=-1;
+                        q->DIRX*=-1;  
+                }
+            }
+        }
+        p->DX=p->DX + (1.5 * p->DIRX);
+        p->DY=p->DY + (1.5 * p->DIRY);
         p->X = round(p->DX);
         p->Y = round(p->DY);
         p->X=p->DX;
@@ -338,6 +421,23 @@ void moveAsteroid()
         if(p->Y < -10){p->Y = SCREEN_H;p->DY = SCREEN_H;}
         if(p->Y > SCREEN_H){p->Y=0;p->DY=0;}
     }
+}
+bool lerp(double *value, double *time, int ms){
+    bool res;
+    if (SDL_GetTicks() - *time < ms) {
+        res = true;
+    } else{
+        *time = SDL_GetTicks();
+        if (*value > 0) {
+        *value = *value -1;
+        res = true;
+        }
+        else {
+            *value = 0;
+        res = false;
+        }
+    }
+    return res;
 }
 void GameLoop()
 {
@@ -384,5 +484,15 @@ void UpdateGame()
         ShipState=RTHRUST;
         rotateBy(&ship,ROTATION);
     }
+    if(KeyPressed) momentum=false;
+    if(shipstill)
+    {
+        if (ShipState == UTHRUST) {momentum = true; reversed = false;}
+        if (ShipState == DTHRUST) {momentum = true; reversed = false;}
+        ShipState = HALTED;
+    }
+    ShipUpdate();
     moveAsteroid();
+    if (ship.X != lastX || ship.Y != lastY || ship.Angle != lastAngle) shipstill = false;
+    else shipstill = true;
 }

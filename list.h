@@ -9,7 +9,7 @@ struct OBJECT
 {
     int  index;
    	SDL_Surface *Img;
-   	int X,Y,W,H,DIRX,DIRY,Life;
+   	int X,Y,W,H,DIRX,DIRY,Life,size;
    	float FX,FY,DX,DY;
    	int Angle;
 	OBJECT *next;
