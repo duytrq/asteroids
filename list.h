@@ -9,14 +9,14 @@ struct OBJECT
 {
     int  index;
    	SDL_Surface *Img;
+   	int Angle;
    	int X,Y,W,H,DIRX,DIRY,Life,size;
    	float FX,FY,DX,DY;
-   	int Angle;
 	OBJECT *next;
 };
 
 
-
+bool Collided(SDL_Rect a, SDL_Rect b);
 OBJECT *newelement(OBJECT temp);
 OBJECT *addfront(OBJECT *head, OBJECT *newp);
 OBJECT *addend (OBJECT *head, OBJECT *newp);

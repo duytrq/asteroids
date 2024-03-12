@@ -161,3 +161,18 @@ void deleteObject(OBJECT **head,int index, bool sort){
     delelement(*head,index);
   if (sort == true) reindex(head); 
 }
+bool Collided(SDL_Rect a, SDL_Rect b)
+{
+    int leftA,rightA,bottomA,topA;
+    int leftB,rightB,bottomB,topB;
+    leftA = a.x;
+    rightA= a.x+a.w;
+    topA = a.y;
+    bottomA= a.y+a.h;
+
+    leftB = b.x;
+    rightB= b.x+b.w;
+    topB = b.y;
+    bottomB= b.y+b.h;
+    return bottomA>topB && topA<bottomB && rightA>leftB && leftA<rightB;
+}
