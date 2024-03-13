@@ -90,7 +90,6 @@ void Ship::Update()
     if (Y > SCREEN_H+10) {Y = 0; DY = 0;}
     if (X > SCREEN_W + 10) {X = 0; DX = 0;}
     if (X < -10) {X = SCREEN_W; DX = SCREEN_W;}
-    
 }
 SDL_Rect Ship::HitBox()
 {

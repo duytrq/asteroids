@@ -1,38 +1,20 @@
-#include<SDL2/SDL.h>
-#include<SDL2/SDL_image.h>
-#include<iostream>
-#include<cmath>
-#include<time.h>
 #include "list.h"
 #include "ship.h"
 #include "DrawFunc.h"
-#define ASTW0 160
-#define ASTH0 160
-#define ASTW1 100
-#define ASTH1 100
-#define ASTW2 60
-#define ASTH2 60
-#define ERR_MSG0 "Error: "
+#include "asteroid.h"
 Ship Player;
 SDL_Event ev;
 bool KeyPressed=false;
-SDL_Surface* background,*ast1,*ast2,*ast3, *bullet;
 bool running=true;
+SDL_Surface* background, *bullet;
 long keystate[1000];
-OBJECT *asteroids;
 int lastX,lastY,lastAngle;
 void loadAssets();
 void HandleEvents();
 void HandleKeys(long sym, bool down);
 void NewGame();
 void addProjectile(double X, double Y, double DX, double DY, SDL_Surface* img, int life);
-void addAsteroid(int X,int Y,int DIRX, int DIRY, int size);
-void moveAsteroid();
 void moveProjectile();
-void Draw(int X, int Y, SDL_Surface *img);
-void DrawObject(OBJECT object);
-void DrawDynamicObject(OBJECT* object);
-void DrawAnimation(int X, int Y, int H, int W, int frame, SDL_Surface *img);
 void GameLoop();
 void DrawScreen();
 void UpdateGame();
@@ -127,45 +109,11 @@ void NewGame()
 void loadAssets()
 {
     background=IMG_Load("assets/images/background.png");
-    if(background==NULL) std::cout<<ERR_MSG0<<"assets/images/background.png\n";
-    ast1=IMG_Load("assets/images/ast1.png");
-    if(ast1==NULL) std::cout<<ERR_MSG0<<"assets/images/ast1.png\n";
-    ast2=IMG_Load("assets/images/ast2.png");
-    if(ast1==NULL) std::cout<<ERR_MSG0<<"assets/images/ast2.png\n";
-    ast3=IMG_Load("assets/images/ast3.png");
-    if(ast3==NULL) std::cout<<ERR_MSG0<<"assets/images/ast3.png\n";
+    if(background==NULL) std::cout<<"assets/images/background.png\n";
     bullet=IMG_Load("assets/images/bullet.png");
-    if(bullet==NULL) std::cout<<ERR_MSG0<<"assets/images/bullet.png\n";
+    if(bullet==NULL) std::cout<<"assets/images/bullet.png\n";
+    loadAsteroid();
     Player.Load();
-}
-void addAsteroid(int X,int Y,int DIRX, int DIRY, int size)
-{
-   OBJECT temp;
-   temp.index = length(&asteroids);
-   temp.DIRX = DIRX;
-   temp.DIRY = DIRY;
-   temp.X = X;
-   temp.Y = Y;
-   temp.DX = temp.X;
-   temp.DY = temp.Y;
-   temp.size=size;
-   if (temp.size==0){
-     temp.W = ASTH0;
-     temp.H = ASTW0;
-     temp.Img=ast2;
-   } 
-   if(temp.size==1) {
-     temp.W = ASTH1;
-     temp.H = ASTW1;
-     temp.Img=ast1;
-   }
-   if(temp.size==2){
-     temp.W = ASTH2;
-     temp.H = ASTW2; 
-     temp.Img=ast3;
-   }
-    temp.Angle=0;
-    asteroids = addend(asteroids, newelement(temp)); 
 }
 void DrawScreen()
 {
@@ -175,14 +123,7 @@ void DrawScreen()
     SDL_Rect rAst;
 
     Player.DrawToScreen();
-    if (asteroids != NULL) {
-        for (int i=0;i<length(&asteroids);i++){
-            DrawDynamicObject(getObject(asteroids,i));
-            rAst=getRect(getObject(asteroids,i));
-            SDL_SetRenderDrawColor( gRen, 0x00, 0xFF, 0x00, 0xFF );
-            SDL_RenderDrawRect(gRen, &rAst);
-        }
-    }
+    DrawAsteroid();
     // if (projectiles != NULL) {
     //     for (int i=0;i<length(&projectiles);i++){
     //         DrawDynamicObject(getObject(projectiles,i));
@@ -190,48 +131,7 @@ void DrawScreen()
     // }
     SDL_RenderPresent(gRen);
 }
-void moveAsteroid()
-{
-    OBJECT *p,*q;
-    for(int i=0;i<length(&asteroids);i++)
-    {
-        p=getObject(asteroids,i);
-        SDL_Rect rShip, rAst1, rAst2;
-        rShip=Player.HitBox();
-        rAst1=getRect(p);
-        if(Collided(rShip,rAst1))
-        {
-            Player.Damaged();
-            p->DIRX*=-1;
-            p->DIRY*=-1;
-        }
-        for(int j=0;j<length(&asteroids);j++)
-        {
-            q=getObject(asteroids,j);
-            rAst2=getRect(q);
-            if(p!=q){           
-                if(Collided(rAst1,rAst2))
-                {
-                        p->DIRX*=-1;
-                        p->DIRY*=-1;
-                        q->DIRX*=-1;
-                        q->DIRX*=-1;  
-                }
-            }
-        }
-        p->DX=p->DX + (1.5 * p->DIRX);
-        p->DY=p->DY + (1.5 * p->DIRY);
-        p->X = round(p->DX);
-        p->Y = round(p->DY);
-        p->X=p->DX;
-        p->Y=p->DY;
-        p->Angle+=3;
-        if(p->X < -10){p->X = SCREEN_W;p->DX = SCREEN_W;}
-        if(p->X > SCREEN_W){p->X=0;p->DX=0;}
-        if(p->Y < -10){p->Y = SCREEN_H;p->DY = SCREEN_H;}
-        if(p->Y > SCREEN_H){p->Y=0;p->DY=0;}
-    }
-}
+
 // void moveProjectile()
 // {
 //     OBJECT *p;
@@ -323,8 +223,8 @@ void UpdateGame()
         Player.Halted();
 
     }
+    moveAsteroid(Player);
     Player.Update();
-    moveAsteroid();
     //moveProjectile();
     if (Player.X != lastX || Player.Y != lastY || Player.Angle != lastAngle) Player.shipstill = false;
     else Player.shipstill = true;
