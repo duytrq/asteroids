@@ -2,19 +2,18 @@
 #include "ship.h"
 #include "DrawFunc.h"
 #include "asteroid.h"
+#include "projectile.h"
 Ship Player;
 SDL_Event ev;
 bool KeyPressed=false;
 bool running=true;
-SDL_Surface* background, *bullet;
+SDL_Surface* background;
 long keystate[1000];
 int lastX,lastY,lastAngle;
 void loadAssets();
 void HandleEvents();
 void HandleKeys(long sym, bool down);
 void NewGame();
-void addProjectile(double X, double Y, double DX, double DY, SDL_Surface* img, int life);
-void moveProjectile();
 void GameLoop();
 void DrawScreen();
 void UpdateGame();
@@ -61,6 +60,7 @@ void HandleEvents()
         switch (e.type)
         {
             case SDL_QUIT:
+                if (asteroids != NULL) deleteList(&asteroids);
                 running=false;
                 break;
             case SDL_KEYDOWN:
@@ -110,8 +110,7 @@ void loadAssets()
 {
     background=IMG_Load("assets/images/background.png");
     if(background==NULL) std::cout<<"assets/images/background.png\n";
-    bullet=IMG_Load("assets/images/bullet.png");
-    if(bullet==NULL) std::cout<<"assets/images/bullet.png\n";
+    loadProjectileIMG();
     loadAsteroid();
     Player.Load();
 }
@@ -124,53 +123,9 @@ void DrawScreen()
 
     Player.DrawToScreen();
     DrawAsteroid();
-    // if (projectiles != NULL) {
-    //     for (int i=0;i<length(&projectiles);i++){
-    //         DrawDynamicObject(getObject(projectiles,i));
-    //     }
-    // }
+    DrawProjectile();
     SDL_RenderPresent(gRen);
 }
-
-// void moveProjectile()
-// {
-//     OBJECT *p;
-//     for(int i=0;i<length(&projectiles);i++)
-//     {
-//         p=getObject(projectiles,i);
-//         if(p->Life==-1)
-//         {
-//             p->FX+= (p->DX *coswithdegree(p->Angle));
-//             p->FY+= (p->DY *sinwithdegree(p->Angle))*-1;
-//             p->X=round(p->FX);
-//             p->Y=round(p->FY);
-//             if(p->X < -10 || p->X > SCREEN_W +10 || p->Y <-10 || p->Y > SCREEN_H + 10)
-//             {
-//                 deleteObject(&projectiles,i,true);
-//             }
-//             SDL_Rect pj=getRect(p);
-//             for(int j=0;j<length(&asteroids);j++)
-//             {
-//                 OBJECT *a;
-//                 a=getObject(asteroids,j);
-//                 SDL_Rect ast=getRect(a);
-//                 if(Collided(pj,ast))
-//                 {
-//                     deleteObject(&asteroids,j,true);
-//                     deleteObject(&projectiles,i,true);
-//                 }
-//             }
-//         }
-//     }
-// }
-// void ShipShoot()
-// {
-//     //if(SDL_GetTicks()-shipShootTime>=200)
-//     //{ 
-//         //shipShootTime=SDL_GetTicks();
-//         addProjectile(ship.X+16,ship.Y-2,20,20,bullet,-1);
-//     //}
-// }
 void GameLoop()
 {
     Uint32 lastTime, currentTime, deltaTime;
@@ -213,7 +168,7 @@ void UpdateGame()
         Player.Right();
     }
     if(keystate[SDL_SCANCODE_SPACE]){
-        //ShipShoot();
+        ShipShoot(&Player);
     }
     if(KeyPressed) Player.momentum=false;
     if(Player.shipstill)
@@ -225,7 +180,7 @@ void UpdateGame()
     }
     moveAsteroid(Player);
     Player.Update();
-    //moveProjectile();
+    moveProjectile();
     if (Player.X != lastX || Player.Y != lastY || Player.Angle != lastAngle) Player.shipstill = false;
     else Player.shipstill = true;
 }

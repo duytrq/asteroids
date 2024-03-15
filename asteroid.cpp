@@ -31,14 +31,17 @@ void addAsteroid(int X,int Y,int DIRX, int DIRY, int size)
     if (temp.size==0){
         temp.W = ASTH0;
         temp.H = ASTW0;
+        temp.Life = 1;
     } 
     if(temp.size==1) {
         temp.W = ASTH1;
         temp.H = ASTW1;
+        temp.Life = 2;
     }
     if(temp.size==2){
         temp.W = ASTH2;
         temp.H = ASTW2; 
+        temp.Life = 3;
     }
         temp.Img=ast;
         temp.Angle=0;
@@ -60,24 +63,6 @@ void moveAsteroid(Ship &ship)
             p->DIRX*=-1;
             p->DIRY*=-1;
         }
-        for(int j=0;j<length(&asteroids);j++)
-        {
-            q=getObject(asteroids,j);
-            rAst2=getRect(q);
-            if(p!=q){           
-                if(Collided(rAst1,rAst2))
-                {
-                        p->DIRX*=-1;
-                        p->DIRY*=-1;
-                        q->DIRX*=-1;
-                        q->DIRX*=-1;  
-                        //q->hasCollided=true;
-                        //p->hasCollided=true;
-                        
-                }
-            }
-        }
-        //p->hasCollided=false;
         p->DX=p->DX + (1.5 * p->DIRX);
         p->DY=p->DY + (1.5 * p->DIRY);
         p->X = round(p->DX);
