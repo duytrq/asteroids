@@ -62,6 +62,9 @@ void moveAsteroid(Ship &ship)
             ship.Damaged();
             p->DIRX*=-1;
             p->DIRY*=-1;
+            if(ship.Lives==0){
+                ship.explosion=true;
+            }
         }
         p->DX=p->DX + (1.5 * p->DIRX);
         p->DY=p->DY + (1.5 * p->DIRY);

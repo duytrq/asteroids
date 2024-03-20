@@ -7,7 +7,7 @@ Ship Player;
 SDL_Event ev;
 bool KeyPressed=false;
 bool running=true;
-SDL_Surface* background;
+SDL_Surface* background, *indicator;
 long keystate[1000];
 int lastX,lastY,lastAngle;
 void loadAssets();
@@ -80,6 +80,7 @@ void NewGame()
 {
     int a,tDIRX,tDIRY,tSIZE,tX,tY;
     if (asteroids != NULL) deleteList(&asteroids);
+    Player.Lives = 3;
     Player.X=200; 
     Player.Y=200;
     lastX=Player.X;
@@ -110,6 +111,7 @@ void loadAssets()
 {
     background=IMG_Load("assets/images/background.png");
     if(background==NULL) std::cout<<"assets/images/background.png\n";
+    indicator=IMG_Load("assets/images/indicators.png");
     loadProjectileIMG();
     loadAsteroid();
     Player.Load();
@@ -117,13 +119,14 @@ void loadAssets()
 void DrawScreen()
 {
     SDL_RenderClear(gRen);
-    Draw(0,0,background);
+    DrawImg(0,0,background);
     
     SDL_Rect rAst;
 
     Player.DrawToScreen();
     DrawAsteroid();
     DrawProjectile();
+    DrawImg(1,1,indicator);
     SDL_RenderPresent(gRen);
 }
 void GameLoop()
@@ -178,8 +181,8 @@ void UpdateGame()
         Player.Halted();
 
     }
-    moveAsteroid(Player);
     Player.Update();
+    moveAsteroid(Player);
     moveProjectile();
     if (Player.X != lastX || Player.Y != lastY || Player.Angle != lastAngle) Player.shipstill = false;
     else Player.shipstill = true;

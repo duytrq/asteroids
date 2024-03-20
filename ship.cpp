@@ -21,6 +21,7 @@ void Ship::Load()
     shipSprite[6].img = IMG_Load("assets/images/ship_plume6.png");
     shipSprite[7].img = IMG_Load("assets/images/ship_dmg0.png");
     shipSprite[8].img = IMG_Load("assets/images/ship_dmg1.png");
+    explosionIMG = IMG_Load("assets/images/exp.png");
 }
 void Ship::Draw(SDL_Surface* img)
 {
@@ -33,6 +34,25 @@ void Ship::Draw(SDL_Surface* img)
     text=SDL_CreateTextureFromSurface(gRen, img);
     SDL_RenderCopyEx(gRen,text, NULL, &R,Angle,NULL,SDL_FLIP_NONE);
     SDL_DestroyTexture(text);
+}
+void Ship::DrawLife(){
+    SDL_Texture *text=SDL_CreateTextureFromSurface(gRen,shipSprite[0].img);
+    int X=65,Y=3,W=40,H=40;
+    for(int i=1;i<=Lives;i++)
+    {
+        SDL_Rect r{X,Y,W,H};
+        SDL_RenderCopy(gRen, text, NULL, &r);
+        X+=40;
+    }
+    SDL_DestroyTexture(text);
+}
+void Ship::DrawExplosion()
+{
+    if(explosion)
+    {
+        timer(&expticks, &timeTemp, 50);
+        DrawAnimation(X,Y,60,60,expticks,explosionIMG);
+    }
 }
 void Ship::DrawToScreen()
 {
@@ -51,11 +71,13 @@ void Ship::DrawToScreen()
 
     if(!explosion){
         //rShip=getRect(&ship);
-        SDL_SetRenderDrawColor( gRen, 0x00, 0xFF, 0x00, 0xFF );
+        //SDL_SetRenderDrawColor( gRen, 0x00, 0xFF, 0x00, 0xFF );
         //SDL_RenderDrawRect(gRen, &rShip);
         Draw(ship);
 
     }
+    DrawExplosion();
+    DrawLife();
 }
 void Ship::move(int speed)
 {

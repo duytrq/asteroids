@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include "list.h"
 #include "window.h"
+#include "DrawFunc.h"
 #define SPEED 12
 #define ROTATION 5.5
 struct Sprite
@@ -11,15 +12,17 @@ struct Sprite
     SDL_Surface *img;
 };
 struct Ship{
-   	int X,Y,W,H,DX,DY,DIRX,DIRY,Life,size;
+   	int X,Y,W,H,DX,DY,DIRX,DIRY,Lives,size;
    	int Angle;
     Sprite shipSprite[9];
+    SDL_Surface* explosionIMG;
     enum SHIPSTATE {HALTED, UTHRUST, DTHRUST, LTHRUST, RTHRUST, DAMAGED};
     enum SHIPSTATE ShipState;
     bool momentum=false;
     bool reversed=false;
     bool shipstill=false;
     bool explosion=false;
+    int expticks=0;
     double velocity = SPEED;
     double shipShootTime;
     Ship();
@@ -29,8 +32,10 @@ struct Ship{
     void ShipShoot();
     void Draw(SDL_Surface *img);
     void DrawToScreen();
+    void DrawLife();
+    void DrawExplosion();
     void rotateBy(float D);
-    void Damaged(){ShipState=DAMAGED;}
+    void Damaged(){ShipState=DAMAGED; Lives--;}
     void Up(){ShipState=UTHRUST; move(-SPEED);}
     void Down(){ShipState=DTHRUST; move(SPEED);}
     void Right(){ShipState=RTHRUST; rotateBy(ROTATION);}

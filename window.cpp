@@ -7,6 +7,7 @@ bool InitVideo()
 {
     SDL_Init(SDL_INIT_VIDEO);
     IMG_Init(IMG_INIT_PNG);
+    TTF_Init();
     gWin=SDL_CreateWindow("ASTEROID",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,SCREEN_W,SCREEN_H,SDL_WINDOW_SHOWN);
     gRen=SDL_CreateRenderer(gWin,-1,SDL_RENDERER_ACCELERATED);
     return (gRen!=NULL) && (gWin!=NULL);
@@ -18,6 +19,7 @@ void Clean()
     SDL_DestroyRenderer(gRen);
     gRen=NULL;
     IMG_Quit();
+    TTF_Quit();
     SDL_Quit();
 }
 double sinwithdegree(int degree)
@@ -51,4 +53,23 @@ bool lerp(double *value, double *time, int ms){
         }
     }
     return res;
+}
+void timer(int *ticks, double *time, int ms){
+
+ if (SDL_GetTicks() - *time < ms) {
+    //value = TRUE;
+   //if (Mix_Playing(3) == 0) Mix_PlayChannel(3, expsnd, 0);
+ } else{
+   *time = SDL_GetTicks();
+   if (*ticks < 6) {
+       *ticks = *ticks +1;
+	//value = TRUE;
+   }else {
+        *ticks = 0;
+ 	//value = FALSE;
+	//currentLevel = 1;
+	//NewGame(currentLevel);
+	}
+}
+ 
 }

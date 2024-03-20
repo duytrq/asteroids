@@ -2,6 +2,7 @@
 #define WINDOW_H
 #include<SDL2/SDL.h>
 #include<SDL2/SDL_image.h>
+#include<SDL2/SDL_ttf.h>
 #include<iostream>
 #include<cmath>
 #include<time.h>
@@ -19,4 +20,5 @@ double sinwithdegree(int degree);
 double coswithdegree(int degree);
 SDL_Rect getRect(OBJECT *obj);
 bool lerp(double *value, double *time, int ms);
+void timer(int *ticks, double *time, int ms);
 #endif
