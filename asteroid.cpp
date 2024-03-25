@@ -64,6 +64,7 @@ void moveAsteroid(Ship &ship)
             p->DIRY*=-1;
             if(ship.Lives==0){
                 ship.explosion=true;
+                if(best < points) best=points;
             }
         }
         p->DX=p->DX + (1.5 * p->DIRX);
@@ -78,4 +79,5 @@ void moveAsteroid(Ship &ship)
         if(p->Y < -10){p->Y = SCREEN_H;p->DY = SCREEN_H;}
         if(p->Y > SCREEN_H){p->Y=0;p->DY=0;}
     }
+    
 }

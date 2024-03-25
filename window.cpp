@@ -1,8 +1,16 @@
 #include "window.h"
 SDL_Renderer *gRen;
 SDL_Window *gWin;
+bool running = true;
+SDL_Surface* background , *indicator;
 time_t t;
 double timeTemp=0;
+int points=0,best = 0;
+int currLevel = 1;
+void loadHUD(){
+    background=IMG_Load("assets/images/background.png");
+    indicator=IMG_Load("assets/images/indicators.png");
+}
 bool InitVideo()
 {
     SDL_Init(SDL_INIT_VIDEO);

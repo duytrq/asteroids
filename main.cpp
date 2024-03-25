@@ -3,17 +3,16 @@
 #include "DrawFunc.h"
 #include "asteroid.h"
 #include "projectile.h"
+#include "inandout.h"
 Ship Player;
 SDL_Event ev;
 bool KeyPressed=false;
-bool running=true;
-SDL_Surface* background, *indicator;
 long keystate[1000];
 int lastX,lastY,lastAngle;
 void loadAssets();
 void HandleEvents();
 void HandleKeys(long sym, bool down);
-void NewGame();
+void NewGame(int level);
 void GameLoop();
 void DrawScreen();
 void UpdateGame();
@@ -21,7 +20,8 @@ int main(int argc, char* argv[])
 {
     InitVideo();
     loadAssets();
-    NewGame();
+    Intro();
+    NewGame(currLevel);
     GameLoop();
     Clean();
 }
@@ -76,7 +76,7 @@ void HandleEvents()
         }
     }
 }
-void NewGame()
+void NewGame(int level)
 {
     int a,tDIRX,tDIRY,tSIZE,tX,tY;
     if (asteroids != NULL) deleteList(&asteroids);
@@ -93,7 +93,7 @@ void NewGame()
     
     lastAngle = Player.Angle;
     srand((unsigned) time(&t));
-    for(int i=0;i<10;i++)
+    for(int i=0;i<level*3;i++)
     {
         a = rand() % 2;
         if (a==0) tDIRX = 1;
@@ -109,15 +109,14 @@ void NewGame()
 }
 void loadAssets()
 {
-    background=IMG_Load("assets/images/background.png");
-    if(background==NULL) std::cout<<"assets/images/background.png\n";
-    indicator=IMG_Load("assets/images/indicators.png");
+    loadHUD();
     loadProjectileIMG();
     loadAsteroid();
     Player.Load();
 }
 void DrawScreen()
 {
+    std::string pointText = std::to_string(points);
     SDL_RenderClear(gRen);
     DrawImg(0,0,background);
     
@@ -127,6 +126,7 @@ void DrawScreen()
     DrawAsteroid();
     DrawProjectile();
     DrawImg(1,1,indicator);
+    DrawText(pointText,"assets/fonts/RubikIso-Regular.ttf", 13, 70, 15, 255, 255, 255, 0, 0, 0, true);
     SDL_RenderPresent(gRen);
 }
 void GameLoop()
@@ -186,4 +186,9 @@ void UpdateGame()
     moveProjectile();
     if (Player.X != lastX || Player.Y != lastY || Player.Angle != lastAngle) Player.shipstill = false;
     else Player.shipstill = true;
+    if(length(&asteroids) == 0){
+        deleteList(&projectiles);
+        currLevel+=1;
+        NewGame(currLevel);
+    }
 }

@@ -85,6 +85,7 @@ void moveProjectile()
                 {
                     deleteObject(&asteroids, j, true);
                     LaunchPoof(a->X,a->Y, debris, 10);
+                    if(p->Img != debris) points+=10;
                     continue;
                 }
                 if(a->Life==2)
@@ -92,13 +93,15 @@ void moveProjectile()
                     addAsteroid(a->X,a->Y, 1, 1, 0);
                     addAsteroid(a->X,a->Y, -1, -1, 0);
                     deleteObject(&asteroids, j, true);
+                    if(p->Img != debris) points+=20;
                 }
                 if(a->Life==3)
                 {
-                    addAsteroid(a->X,a->Y, 1, 1, 0);
-                    addAsteroid(a->X,a->Y, -1, -1, 0);
-                    addAsteroid(a->X,a->Y, -1.3, -1.3, 0);
+                    addAsteroid(a->X, a->Y, 1,1,1);
+	                addAsteroid(a->X, a->Y, -1,-1,1);
+	                addAsteroid(a->X, a->Y, 1,-1,1);
                     deleteObject(&asteroids, j, true);
+                    if(p->Img != debris) points+=30;
                 }
                 deleteObject(&projectiles,i,true);
                 bCol=true;
