@@ -63,8 +63,8 @@ void moveAsteroid(Ship &ship)
             p->DIRX*=-1;
             p->DIRY*=-1;
             if(ship.Lives==0){
+                Mix_HaltChannel(-1);
                 ship.explosion=true;
-                if(best < points) best=points;
             }
         }
         p->DX=p->DX + (1.5 * p->DIRX);

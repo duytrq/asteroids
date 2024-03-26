@@ -114,6 +114,7 @@ void ShipShoot(Ship *ship)
 {
     if(SDL_GetTicks()-ship->shipShootTime>=150)
     { 
+        Mix_PlayChannel(2, shot, 0);
         ship->shipShootTime=SDL_GetTicks();
         LaunchProjectile(ship->X+16,ship->Y-2,20,20,bullet,-1,ship);
     }

@@ -7,6 +7,7 @@ void UpdateGame();
 int main(int argc, char* argv[])
 {
     InitVideo();
+    InitAudio();
     loadAssets();
     Intro();
     NewGame(currLevel);
@@ -20,6 +21,7 @@ void loadAssets()
     loadProjectileIMG();
     loadAsteroid();
     Player.Load();
+    loadAudio();
 }
 void DrawScreen()
 {
@@ -60,7 +62,7 @@ void GameLoop()
         if(Player.explosion){
             if (SDL_GetTicks() - timeTemp < 100) {
                 Player.explosion = true;
-            //if (Mix_Playing(3) == 0) Mix_PlayChannel(3, expsnd, 0);
+                if (Mix_Playing(3) == 0) Mix_PlayChannel(3, expsnd, 0);
                 Player.DrawExplosion();
             } else{
                 timeTemp = SDL_GetTicks();
@@ -77,6 +79,7 @@ void GameLoop()
                         currLevel = 1;
                         Player.explosion=false;
                         ClearKey();
+                        SDL_Delay(100);
                         NewGame(currLevel);
                     }
                     else running = false;

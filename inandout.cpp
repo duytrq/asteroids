@@ -13,6 +13,7 @@ void Intro()
     SDL_RenderClear(gRen);
     DrawImg(0,0, background);
     introStr = "AST3R0ID";
+    if (Mix_Playing(1) == 0) Mix_PlayChannel(1, intro, 0);
     do{ 
         SDL_RenderClear(gRen);
         DrawImg(0,0,background);

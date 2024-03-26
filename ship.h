@@ -14,9 +14,9 @@ struct Sprite
 struct Ship{
    	int X,Y,W,H,DX,DY,DIRX,DIRY,Lives,size;
    	int Angle;
-    Sprite shipSprite[9];
+    Sprite shipSprite[10];
     SDL_Surface* explosionIMG;
-    enum SHIPSTATE {HALTED, UTHRUST, DTHRUST, LTHRUST, RTHRUST, DAMAGED};
+    enum SHIPSTATE {HALTED, UTHRUST, DTHRUST, LTHRUST, RTHRUST, DAMAGED, SKILL};
     enum SHIPSTATE ShipState;
     bool momentum=false;
     bool reversed=false;

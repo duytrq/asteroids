@@ -3,6 +3,7 @@
 #include<SDL2/SDL.h>
 #include<SDL2/SDL_image.h>
 #include<SDL2/SDL_ttf.h>
+#include<SDL2/SDL_mixer.h>
 #include<iostream>
 #include<cmath>
 #include<time.h>
@@ -20,8 +21,12 @@ extern int points,best;
 extern int currLevel;
 extern bool running;
 extern SDL_Surface *background, *indicator;
+extern Mix_Music* theme;
+extern Mix_Chunk* sound, *intro, *shot, *expsnd, *shield, *crash;
 bool InitVideo();
+bool InitAudio();
 void loadHUD();
+void loadAudio();
 void Clean();
 double sinwithdegree(int degree);
 double coswithdegree(int degree);

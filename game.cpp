@@ -91,6 +91,7 @@ void NewGame(int level)
         tSIZE = rand() % 3;
         addAsteroid(tX,tY,tDIRX, tDIRY, tSIZE);
     }
+    Mix_PlayMusic(theme, -1);
 }
 void UpdateGame()
 {
@@ -118,7 +119,7 @@ void UpdateGame()
         if (Player.ShipState == Player.UTHRUST) {Player.momentum = true; Player.reversed = false;}
         if (Player.ShipState == Player.DTHRUST) {Player.momentum = true; Player.reversed = true;}
         Player.Halted();
-
+        if (Mix_Playing(1) != 0) Mix_FadeOutChannel(1,500);	
     }
     Player.Update();
     moveAsteroid(Player);
@@ -126,7 +127,9 @@ void UpdateGame()
     if (Player.X != lastX || Player.Y != lastY || Player.Angle != lastAngle) Player.shipstill = false;
     else Player.shipstill = true;
     if(length(&asteroids) == 0){
+        Mix_HaltChannel(-1);
         deleteList(&projectiles);
+        SDL_Delay(100);
         currLevel+=1;
         NewGame(currLevel);
     }

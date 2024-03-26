@@ -21,6 +21,7 @@ void Ship::Load()
     shipSprite[6].img = IMG_Load("assets/images/ship_plume6.png");
     shipSprite[7].img = IMG_Load("assets/images/ship_dmg0.png");
     shipSprite[8].img = IMG_Load("assets/images/ship_dmg1.png");
+    shipSprite[9].img = IMG_Load("assets/images/ship_skill.png");
     explosionIMG = IMG_Load("assets/images/exp.png");
 }
 void Ship::Draw(SDL_Surface* img)
@@ -85,7 +86,7 @@ void Ship::move(int speed)
 }
 void Ship::rotateBy(float D){
     float temp;
-
+    if (Mix_Playing(1) == 0) Mix_PlayChannel( 1, sound, 0);
     if(fabs(Angle + D) < 181) 
     {
         temp = Angle + D;
@@ -97,15 +98,15 @@ void Ship::rotateBy(float D){
 }
 void Ship::Update()
 {
-    // if(momentum==true) 
-    // {
-    //     momentum=lerp(&velocity,&timeTemp,100);
-    //     if(reversed==false) move(-velocity);
-    //     else move(velocity);
-    // }
-    // else{
-    //     velocity=SPEED;
-    // }
+    if(momentum==true) 
+    {
+        momentum=lerp(&velocity,&timeTemp,100);
+        if(reversed==false) move(-velocity);
+        else move(velocity);
+    }
+    else{
+        velocity=SPEED;
+    }
     if (Y < -10) {Y = SCREEN_H; DY = SCREEN_H;}
     if (Y > SCREEN_H+10) {Y = 0; DY = 0;}
     if (X > SCREEN_W + 10) {X = 0; DX = 0;}
