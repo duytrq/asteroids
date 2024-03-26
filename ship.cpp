@@ -37,22 +37,19 @@ void Ship::Draw(SDL_Surface* img)
 }
 void Ship::DrawLife(){
     SDL_Texture *text=SDL_CreateTextureFromSurface(gRen,shipSprite[0].img);
-    int X=65,Y=3,W=40,H=40;
+    int X=65,Y=3,W=20,H=20;
     for(int i=1;i<=Lives;i++)
     {
         SDL_Rect r{X,Y,W,H};
         SDL_RenderCopy(gRen, text, NULL, &r);
-        X+=40;
+        X+=20;
     }
     SDL_DestroyTexture(text);
 }
 void Ship::DrawExplosion()
 {
-    if(explosion)
-    {
-        timer(&expticks, &timeTemp, 50);
-        DrawAnimation(X,Y,60,60,expticks,explosionIMG);
-    }
+    DrawAnimation(X,Y,60,60,expticks,explosionIMG);
+    SDL_RenderPresent(gRen);
 }
 void Ship::DrawToScreen()
 {
@@ -76,7 +73,7 @@ void Ship::DrawToScreen()
         Draw(ship);
 
     }
-    DrawExplosion();
+    //DrawExplosion();
     DrawLife();
 }
 void Ship::move(int speed)
@@ -87,27 +84,28 @@ void Ship::move(int speed)
     Y=round(DY);
 }
 void Ship::rotateBy(float D){
-   float temp;
+    float temp;
+
     if(fabs(Angle + D) < 181) 
     {
-     temp = Angle + D;
-     Angle = round(temp);
+        temp = Angle + D;
+        Angle = round(temp);
     } 
     else{
-      Angle = Angle * -1;  
+        Angle = Angle * -1;  
     }
 }
 void Ship::Update()
 {
-    if(momentum==true) 
-    {
-        momentum=lerp(&velocity,&timeTemp,100);
-        if(reversed==false) move(-velocity);
-        else move(velocity);
-    }
-    else{
-        velocity=SPEED;
-    }
+    // if(momentum==true) 
+    // {
+    //     momentum=lerp(&velocity,&timeTemp,100);
+    //     if(reversed==false) move(-velocity);
+    //     else move(velocity);
+    // }
+    // else{
+    //     velocity=SPEED;
+    // }
     if (Y < -10) {Y = SCREEN_H; DY = SCREEN_H;}
     if (Y > SCREEN_H+10) {Y = 0; DY = 0;}
     if (X > SCREEN_W + 10) {X = 0; DX = 0;}

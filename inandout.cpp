@@ -1,4 +1,5 @@
 #include "inandout.h"
+bool newgame = false;
 void Intro()
 {
     std::fstream file("highscores.txt");
@@ -47,4 +48,58 @@ void Intro()
 
    } while (keyflag ==false);
    SDL_Delay(100);
+}
+void Outtro()
+{
+    std::string outtro, tryagain, yes, no;
+    SDL_Event e;
+    bool keyflag = false;
+    SDL_RenderClear(gRen);
+    DrawImg(0,0, background);
+    outtro = "Game Over";
+    yes = "Yes";
+    no = "No";
+    DrawText(outtro,"assets/fonts/RubikIso-Regular.ttf", 160, 205 ,146, 255,255, 0, 0, 0, 0,true); 
+    if(points<best){
+        tryagain = "You need "+std::to_string(best-points)+" to beat the highscores. Try again?"; 
+    }
+    else{
+        tryagain = "New record have been set. Wanna play again?";
+    }
+    DrawText(tryagain,"assets/fonts/FreeMonoBold.ttf", 24, 290,400,255,255, 255, 0, 0, 0,true);
+    DrawText(yes,"assets/fonts/FreeMonoBold.ttf", 32, 550,500,255,255, 255, 0, 0, 0,true); 
+    DrawText(no,"assets/fonts/FreeMonoBold.ttf", 32, 550,540,255,255, 255, 0, 0, 0,true); 
+    SDL_RenderPresent(gRen);
+    do{
+        if(SDL_PollEvent(&e)){
+            if(e.type == SDL_QUIT)
+            {
+                running=false;
+                break;
+            }
+            else if(e.type == SDL_KEYDOWN)
+            {
+                switch (e.key.keysym.sym)
+                {
+                case SDLK_y:
+                    newgame = true;
+                    DrawText(yes,"assets/fonts/FreeMonoBold.ttf", 32, 550,500,255,0, 0, 0, 0, 0,true); 
+                    DrawText(no,"assets/fonts/FreeMonoBold.ttf", 32, 550,540,255,255, 255, 0, 0, 0,true); 
+                    SDL_RenderPresent(gRen);
+                    break;
+                case SDLK_n:
+                    newgame = false;
+                    DrawText(yes,"assets/fonts/FreeMonoBold.ttf", 32, 550,500,255,255, 255, 0, 0, 0,true); 
+                    DrawText(no,"assets/fonts/FreeMonoBold.ttf", 32, 550,540,255,0, 0, 0, 0, 0,true); 
+                    SDL_RenderPresent(gRen);
+                    break;
+                case SDLK_RETURN:
+                    keyflag = true;
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+    }while(!keyflag);
 }

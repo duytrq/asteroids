@@ -28,7 +28,6 @@ void LaunchProjectile(double X, double Y, double DX, double DY, SDL_Surface *Img
         p.X = round(p.FX);
         p.Y = round(p.FY);
     } else{
-        p.Angle=30;
         p.X = X;
         p.Y = Y;
         p.FX = X;
