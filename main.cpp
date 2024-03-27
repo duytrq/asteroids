@@ -34,8 +34,8 @@ void DrawScreen()
     Player.DrawToScreen();
     DrawAsteroid();
     DrawProjectile();
-    DrawImg(1,1,indicator);
-    DrawText(pointText,"assets/fonts/FreeMonoBold.ttf", 13, 70, 15, 255, 255, 255, 0, 0, 0, true);
+    DrawImgRatio(1,1,2,indicator);
+    DrawText(pointText,"assets/fonts/FreeMonoBold.ttf", 20, 130, 32, 255, 255, 255, 0, 0, 0, true);
     SDL_RenderPresent(gRen);
 }
 void GameLoop()
@@ -53,8 +53,10 @@ void GameLoop()
         }
         while (deltaTime >= targetFrameTime)
         {
-            HandleEvents();
-            UpdateGame();
+            if(!Player.explosion){
+                HandleEvents();
+                UpdateGame();
+            }
             deltaTime -= targetFrameTime;
             lastTime += targetFrameTime;
         }
@@ -77,23 +79,12 @@ void GameLoop()
                     if(newgame){
                         points = 0;
                         currLevel = 1;
-                        Player.explosion=false;
                         ClearKey();
-                        SDL_Delay(100);
                         NewGame(currLevel);
                     }
                     else running = false;
                 }            
             }
-            // Outtro();
-            // if(newgame){
-            //     points = 0;
-            //     currLevel = 1;
-            //     Player.explosion=false;
-            //     ClearKey();
-            //     NewGame(currLevel);
-            // }
-            // else running = false;
         }
     }
 }

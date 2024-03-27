@@ -17,7 +17,7 @@ void DrawAsteroid()
         }
     }
 }
-void addAsteroid(int X,int Y,int DIRX, int DIRY, int size)
+void addAsteroid(int X,int Y,int DIRX, int DIRY, int size, double vel)
 {
     OBJECT temp;
     temp.index = length(&asteroids);
@@ -28,6 +28,8 @@ void addAsteroid(int X,int Y,int DIRX, int DIRY, int size)
     temp.DX = temp.X;
     temp.DY = temp.Y;
     temp.size=size;
+    temp.velrate = vel;
+    //std::cout<<temp.velrate<<std::endl;
     if (temp.size==0){
         temp.W = ASTH0;
         temp.H = ASTW0;
@@ -57,22 +59,27 @@ void moveAsteroid(Ship &ship)
         rAst1=getRect(p);
         rShip=ship.HitBox();
         rAst1=getRect(p);
-        if(Collided(rShip,rAst1))
+        if(Collided(rShip,rAst1) && gReady)
         {
-            ship.Damaged();
-            p->DIRX*=-1;
-            p->DIRY*=-1;
-            if(ship.Lives==0){
-                Mix_HaltChannel(-1);
-                ship.explosion=true;
+            if(!ship.skillIsActive){
+                ship.Damaged();
+                p->DIRX*=-1;
+                p->DIRY*=-1;
+                if(ship.Lives==0){
+                    Mix_HaltChannel(-1);
+                    ship.explosion=true;
+                }
+            }
+            else{
+                deleteObject(&asteroids, i, true);
             }
         }
-        p->DX=p->DX + (1.5 * p->DIRX);
-        p->DY=p->DY + (1.5 * p->DIRY);
+        p->DX=p->DX + (p->velrate * p->DIRX);
+        p->DY=p->DY + (p->velrate * p->DIRY);
         p->X = round(p->DX);
         p->Y = round(p->DY);
-        p->X=p->DX;
-        p->Y=p->DY;
+        // p->X=p->DX;
+        // p->Y=p->DY;
         p->Angle+=3;
         if(p->X < -10){p->X = SCREEN_W;p->DX = SCREEN_W;}
         if(p->X > SCREEN_W){p->X=0;p->DX=0;}

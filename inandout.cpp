@@ -4,6 +4,7 @@ void Intro()
 {
     std::fstream file("highscores.txt");
     file>>best;
+    file.close();
     std::string introStr, helpStr0, helpStr1, helpStr2, helpStr3, helpStr4, bestScores;
     bestScores = "Best scores: ";
     bestScores+= std::to_string(best);
@@ -52,6 +53,7 @@ void Intro()
 }
 void Outtro()
 {
+    std::ofstream file("highscores.txt", std::ios::out | std::ios::trunc);
     std::string outtro, tryagain, yes, no;
     SDL_Event e;
     bool keyflag = false;
@@ -66,10 +68,14 @@ void Outtro()
     }
     else{
         tryagain = "New record have been set. Wanna play again?";
+        if(file.is_open()){
+            file << points;
+            file.close();
+        }
     }
-    DrawText(tryagain,"assets/fonts/FreeMonoBold.ttf", 24, 290,400,255,255, 255, 0, 0, 0,true);
-    DrawText(yes,"assets/fonts/FreeMonoBold.ttf", 32, 550,500,255,255, 255, 0, 0, 0,true); 
-    DrawText(no,"assets/fonts/FreeMonoBold.ttf", 32, 550,540,255,255, 255, 0, 0, 0,true); 
+    DrawText(tryagain,"assets/fonts/FreeMonoBold.ttf", 24, 350,400,255,255, 255, 0, 0, 0,true);
+    DrawText(yes,"assets/fonts/FreeMonoBold.ttf", 36, 600,500,255,255, 255, 0, 0, 0,true); 
+    DrawText(no,"assets/fonts/FreeMonoBold.ttf", 36, 600,560,255,255, 255, 0, 0, 0,true); 
     SDL_RenderPresent(gRen);
     do{
         if(SDL_PollEvent(&e)){
@@ -84,14 +90,14 @@ void Outtro()
                 {
                 case SDLK_y:
                     newgame = true;
-                    DrawText(yes,"assets/fonts/FreeMonoBold.ttf", 32, 550,500,255,0, 0, 0, 0, 0,true); 
-                    DrawText(no,"assets/fonts/FreeMonoBold.ttf", 32, 550,540,255,255, 255, 0, 0, 0,true); 
+                    DrawText(yes,"assets/fonts/FreeMonoBold.ttf", 36, 600,500,255,0, 0, 0, 0, 0,true); 
+                    DrawText(no,"assets/fonts/FreeMonoBold.ttf", 36, 600,560,255,255, 255, 0, 0, 0,true); 
                     SDL_RenderPresent(gRen);
                     break;
                 case SDLK_n:
                     newgame = false;
-                    DrawText(yes,"assets/fonts/FreeMonoBold.ttf", 32, 550,500,255,255, 255, 0, 0, 0,true); 
-                    DrawText(no,"assets/fonts/FreeMonoBold.ttf", 32, 550,540,255,0, 0, 0, 0, 0,true); 
+                    DrawText(yes,"assets/fonts/FreeMonoBold.ttf", 36, 600,500,255,255, 255, 0, 0, 0,true); 
+                    DrawText(no,"assets/fonts/FreeMonoBold.ttf", 36, 600,560,255,0, 0, 0, 0, 0,true); 
                     SDL_RenderPresent(gRen);
                     break;
                 case SDLK_RETURN:

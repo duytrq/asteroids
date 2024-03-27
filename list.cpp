@@ -18,6 +18,8 @@ OBJECT *newelement(OBJECT temp)
 	newp->FX = temp.FX;
 	newp->FY = temp.FY;
 	newp->Angle = temp.Angle;
+	newp->size = temp.size;
+	newp->velrate = temp.velrate;
         newp -> next = NULL;
 	return newp;
 }

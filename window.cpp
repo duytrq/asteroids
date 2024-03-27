@@ -2,9 +2,10 @@
 SDL_Renderer *gRen;
 SDL_Window *gWin;
 bool running = true;
+bool gReady = false;
 SDL_Surface* background , *indicator;
 time_t t;
-double timeTemp=0;
+Uint32 timeTemp=0;
 int points=0,best = 0;
 int currLevel = 1;
 Mix_Music *theme = NULL;
@@ -83,7 +84,7 @@ SDL_Rect getRect(OBJECT *obj)
     SDL_Rect t={obj->X+10,obj->Y+10,obj->W-20,obj->H-20};
     return t;
 }
-bool lerp(double *value, double *time, int ms){
+bool lerp(double *value, Uint32 *time, int ms){
     bool res;
     if (SDL_GetTicks() - *time < ms) {
         res = true;
@@ -100,22 +101,22 @@ bool lerp(double *value, double *time, int ms){
     }
     return res;
 }
-void timer(int *ticks, double *time, int ms){
+// void timer(int *ticks, Uint8 *time, int ms){
 
- if (SDL_GetTicks() - *time < ms) {
-    //value = TRUE;
-   //if (Mix_Playing(3) == 0) Mix_PlayChannel(3, expsnd, 0);
- } else{
-   *time = SDL_GetTicks();
-   if (*ticks < 6) {
-       *ticks = *ticks +1;
-	//value = TRUE;
-   }else {
-        *ticks = 0;
- 	//value = FALSE;
-	//currentLevel = 1;
-	//NewGame(currentLevel);
-	}
-}
+//  if (SDL_GetTicks() - *time < ms) {
+//     //value = TRUE;
+//    //if (Mix_Playing(3) == 0) Mix_PlayChannel(3, expsnd, 0);
+//  } else{
+//    *time = SDL_GetTicks();
+//    if (*ticks < 6) {
+//        *ticks = *ticks +1;
+// 	//value = TRUE;
+//    }else {
+//         *ticks = 0;
+//  	//value = FALSE;
+// 	//currentLevel = 1;
+// 	//NewGame(currentLevel);
+// 	}
+// }
  
-}
+// }

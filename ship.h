@@ -5,6 +5,7 @@
 #include "list.h"
 #include "window.h"
 #include "DrawFunc.h"
+#include "timer.h"
 #define SPEED 12
 #define ROTATION 5.5
 struct Sprite
@@ -15,14 +16,19 @@ struct Ship{
    	int X,Y,W,H,DX,DY,DIRX,DIRY,Lives,size;
    	int Angle;
     Sprite shipSprite[10];
-    SDL_Surface* explosionIMG;
+    SDL_Surface* explosionIMG,*icon;
     enum SHIPSTATE {HALTED, UTHRUST, DTHRUST, LTHRUST, RTHRUST, DAMAGED, SKILL};
     enum SHIPSTATE ShipState;
     bool momentum=false;
     bool reversed=false;
     bool shipstill=false;
     bool explosion=false;
-    int expticks=0;
+    bool skillOnCooldown = false, skillIsActive =false;
+    int expticks=0; 
+    Timer skillAct,skillCool;
+    const Uint32 skillDuration=2000;
+    const Uint32 skillCooldown=5000;
+    Uint32 skillLastUsed = 0;
     double velocity = SPEED;
     double shipShootTime;
     Ship();
@@ -35,6 +41,9 @@ struct Ship{
     void DrawLife();
     void DrawExplosion();
     void rotateBy(float D);
+    void SkillActivate();
+    void UpdateSkillState();
+    void DisplaySkillTimer();
     void Damaged(){ShipState=DAMAGED; Lives--;}
     void Up(){ShipState=UTHRUST; move(-SPEED);}
     void Down(){ShipState=DTHRUST; move(SPEED);}

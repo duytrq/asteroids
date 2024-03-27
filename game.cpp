@@ -23,6 +23,9 @@ void HandleKey(long sym, bool down)
         case SDLK_SPACE:
             sym=SDL_SCANCODE_SPACE;
             break;
+        case SDLK_e:
+            sym=SDL_SCANCODE_E;
+            break;
         default:
             break;
     }
@@ -45,6 +48,7 @@ void HandleEvents()
             case SDL_KEYDOWN:
                 HandleKey(e.key.keysym.sym,true);
                 KeyPressed=true;
+                gReady = true;
                 break;
             case SDL_KEYUP:
                 HandleKey(e.key.keysym.sym,false);
@@ -63,8 +67,11 @@ void ClearKey(){
 }
 void NewGame(int level)
 {
+    gReady = false;
     int a,tDIRX,tDIRY,tSIZE,tX,tY;
+    double tvelrate ; 
     if (asteroids != NULL) deleteList(&asteroids);
+    Player.explosion=false;
     Player.Lives = 3; 
     Player.X=200; 
     Player.Y=200;
@@ -75,7 +82,7 @@ void NewGame(int level)
     Player.W = 50;
     Player.H = 70;
     Player.Angle = 0;  
-    
+    Player.skillAct.start();
     lastAngle = Player.Angle;
     srand((unsigned) time(&t));
     for(int i=0;i<level*3;i++)
@@ -89,7 +96,11 @@ void NewGame(int level)
         tX = rand() % 1280;
         tY = rand() % 720;
         tSIZE = rand() % 3;
-        addAsteroid(tX,tY,tDIRX, tDIRY, tSIZE);
+        a = rand() %3;
+        if(a==0) tvelrate = 1.3;
+        else if(a==1) tvelrate = 1.5;
+        else tvelrate = 1.7;
+        addAsteroid(tX,tY,tDIRX, tDIRY, tSIZE, tvelrate);
     }
     Mix_PlayMusic(theme, -1);
 }
@@ -113,6 +124,13 @@ void UpdateGame()
     if(keystate[SDL_SCANCODE_SPACE]){
         ShipShoot(&Player);
     }
+    if(keystate[SDL_SCANCODE_E]){
+        Player.SkillActivate();
+    }
+    //if(Player.skillCool.getTicks()>5000){    
+        //if(!Player.skillAct.isStarted()) Player.skillAct.start();
+    
+    //}
     if(KeyPressed) Player.momentum=false;
     if(Player.shipstill)
     {

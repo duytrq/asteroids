@@ -12,6 +12,7 @@ struct OBJECT
    	int Angle;
    	int X,Y,W,H,DIRX,DIRY,Life,size;
    	float FX,FY,DX,DY;
+	double velrate;
 	OBJECT *next;
 };
 

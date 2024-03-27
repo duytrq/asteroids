@@ -23,6 +23,7 @@ void Ship::Load()
     shipSprite[8].img = IMG_Load("assets/images/ship_dmg1.png");
     shipSprite[9].img = IMG_Load("assets/images/ship_skill.png");
     explosionIMG = IMG_Load("assets/images/exp.png");
+    icon = IMG_Load("assets/images/skill_icon.png");
 }
 void Ship::Draw(SDL_Surface* img)
 {
@@ -37,15 +38,51 @@ void Ship::Draw(SDL_Surface* img)
     SDL_DestroyTexture(text);
 }
 void Ship::DrawLife(){
-    SDL_Texture *text=SDL_CreateTextureFromSurface(gRen,shipSprite[0].img);
-    int X=65,Y=3,W=20,H=20;
+    int X=90,Y=3,W=40,H=40;
+    SDL_Texture *text;
+    if(!skillIsActive){
+        text=SDL_CreateTextureFromSurface(gRen,shipSprite[0].img);
+    }
+    else text=SDL_CreateTextureFromSurface(gRen,shipSprite[9].img);
     for(int i=1;i<=Lives;i++)
     {
         SDL_Rect r{X,Y,W,H};
         SDL_RenderCopy(gRen, text, NULL, &r);
-        X+=20;
+        X+=40;
     }
     SDL_DestroyTexture(text);
+}
+void Ship::DisplaySkillTimer()
+{
+    if(skillIsActive){
+        std::stringstream timeText;
+        timeText.str("");
+        if(skillDuration>(skillAct.getTicks()-skillLastUsed))
+            timeText<< (skillDuration-(skillAct.getTicks()-skillLastUsed)) / 1000.f ;
+        else timeText<<"0";
+        DrawText(timeText.str(),"assets/fonts/FreeMonoBold.ttf", 30, 215, 3, 255, 255, 255, 0, 0, 0, true); 
+    }
+    else{
+        DrawImgRatio(0,630,0.25,icon);
+        std::stringstream timeText;
+        timeText.str(" ");
+        if(skillLastUsed==0){
+            if((skillCooldown>(skillAct.getTicks()-skillLastUsed)))
+                timeText<<(skillCooldown-(skillAct.getTicks()-skillLastUsed)) / 1000.f;
+            else{
+                timeText<<"Ready";
+            }
+        }
+        else{
+            if((skillOnCooldown && skillCooldown>(skillAct.getTicks()-skillLastUsed))){
+                timeText<<(skillCooldown-(skillAct.getTicks()-skillLastUsed)) / 1000.f;
+            }
+            else{
+                timeText<<"Ready";
+            }
+        }
+        DrawText(timeText.str(),"assets/fonts/FreeMonoBold.ttf", 30, 10, 600, 255, 255, 255, 0, 0, 0, true);
+    }
 }
 void Ship::DrawExplosion()
 {
@@ -63,7 +100,8 @@ void Ship::DrawToScreen()
         case DTHRUST: a=rand() & 1; ship = shipSprite[a+3].img; break;		       
         case LTHRUST: ship = shipSprite[6].img; break;			        
         case RTHRUST: ship = shipSprite[5].img; break;			        
-        case DAMAGED: a=rand() & 1; ship = shipSprite[a+7].img; break;			        
+        case DAMAGED: a=rand() & 1; ship = shipSprite[a+7].img; break;
+        case SKILL: ship = shipSprite[9].img; break;			        
     }
     SDL_Rect rShip, rAst;
 
@@ -76,6 +114,7 @@ void Ship::DrawToScreen()
     }
     //DrawExplosion();
     DrawLife();
+    DisplaySkillTimer();
 }
 void Ship::move(int speed)
 {
@@ -96,8 +135,24 @@ void Ship::rotateBy(float D){
         Angle = Angle * -1;  
     }
 }
+void Ship::SkillActivate(){
+    if(skillAct.getTicks()-skillLastUsed >= skillCooldown && !skillOnCooldown){
+        skillIsActive = true;
+        skillOnCooldown = true;
+        skillLastUsed = skillAct.getTicks();
+    }
+}
+void Ship::UpdateSkillState(){
+    if(skillIsActive && skillAct.getTicks() - skillLastUsed>= skillDuration){
+        skillIsActive = false;
+    }
+    if(skillOnCooldown && skillAct.getTicks() - skillLastUsed >= skillCooldown){
+        skillOnCooldown = false;
+    }
+}
 void Ship::Update()
 {
+    UpdateSkillState();
     if(momentum==true) 
     {
         momentum=lerp(&velocity,&timeTemp,100);
@@ -111,6 +166,7 @@ void Ship::Update()
     if (Y > SCREEN_H+10) {Y = 0; DY = 0;}
     if (X > SCREEN_W + 10) {X = 0; DX = 0;}
     if (X < -10) {X = SCREEN_W; DX = SCREEN_W;}
+    if(skillIsActive) ShipState = SKILL;
 }
 SDL_Rect Ship::HitBox()
 {

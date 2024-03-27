@@ -11,6 +11,18 @@ void DrawImg(int X, int Y, SDL_Surface *img)
     SDL_RenderCopy(gRen,tex,NULL,&r);
     SDL_DestroyTexture(tex);
 }
+void DrawImgRatio(int X, int Y, double ratio, SDL_Surface *img)
+{
+    SDL_Rect r;
+    SDL_Texture *tex;
+    r.x=X;
+    r.y=Y;
+    r.w=img->w*ratio;
+    r.h=img->h*ratio;
+    tex=SDL_CreateTextureFromSurface(gRen,img);
+    SDL_RenderCopy(gRen,tex,NULL,&r);
+    SDL_DestroyTexture(tex);
+}
 void DrawDynamicObject(OBJECT* object)
 {
     SDL_Rect R;
