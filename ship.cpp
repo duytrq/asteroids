@@ -14,14 +14,13 @@ void Ship::Load()
 {
     shipSprite[0].img = IMG_Load("assets/images/ship.png");  
     shipSprite[1].img = IMG_Load("assets/images/ship_plume.png");
-    shipSprite[2].img = IMG_Load("assets/images/ship_plume2.png"); 
-    shipSprite[3].img = IMG_Load("assets/images/ship_plume3.png"); 
-    shipSprite[4].img = IMG_Load("assets/images/ship_plume4.png");
-    shipSprite[5].img = IMG_Load("assets/images/ship_plume5.png"); 
-    shipSprite[6].img = IMG_Load("assets/images/ship_plume6.png");
-    shipSprite[7].img = IMG_Load("assets/images/ship_dmg0.png");
-    shipSprite[8].img = IMG_Load("assets/images/ship_dmg1.png");
-    shipSprite[9].img = IMG_Load("assets/images/ship_skill.png");
+    shipSprite[2].img = IMG_Load("assets/images/ship_plume5.png"); 
+    shipSprite[3].img = IMG_Load("assets/images/ship_plume6.png");
+    shipSprite[4].img = IMG_Load("assets/images/ship_dmg0.png"); 
+    shipSprite[5].img = IMG_Load("assets/images/ship_skill.png");
+    // shipSprite[7].img = IMG_Load("assets/images/ship_dmg0.png");
+    // shipSprite[8].img = IMG_Load("assets/images/ship_dmg1.png");
+    // shipSprite[9].img = IMG_Load("assets/images/ship_skill.png");
     explosionIMG = IMG_Load("assets/images/exp.png");
     icon = IMG_Load("assets/images/skill_icon.png");
 }
@@ -43,7 +42,7 @@ void Ship::DrawLife(){
     if(!skillIsActive){
         text=SDL_CreateTextureFromSurface(gRen,shipSprite[0].img);
     }
-    else text=SDL_CreateTextureFromSurface(gRen,shipSprite[9].img);
+    else text=SDL_CreateTextureFromSurface(gRen,shipSprite[5].img);
     for(int i=1;i<=Lives;i++)
     {
         SDL_Rect r{X,Y,W,H};
@@ -96,12 +95,11 @@ void Ship::DrawToScreen()
     switch (ShipState)
     {
         case HALTED: ship = shipSprite[0].img; break;			        
-        case UTHRUST: a=rand() & 1; ship = shipSprite[a+1].img; break;			        
-        case DTHRUST: a=rand() & 1; ship = shipSprite[a+3].img; break;		       
-        case LTHRUST: ship = shipSprite[6].img; break;			        
-        case RTHRUST: ship = shipSprite[5].img; break;			        
-        case DAMAGED: a=rand() & 1; ship = shipSprite[a+7].img; break;
-        case SKILL: ship = shipSprite[9].img; break;			        
+        case UTHRUST: ship = shipSprite[1].img; break;			        	       
+        case LTHRUST: ship = shipSprite[2].img; break;			        
+        case RTHRUST: ship = shipSprite[3].img; break;			        
+        case DAMAGED: ship = shipSprite[4].img; break;
+        case SKILL: ship = shipSprite[5].img; break;			        
     }
     SDL_Rect rShip, rAst;
 

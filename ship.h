@@ -18,12 +18,10 @@ struct Ship{
     const double accFactor = 0.2;
     const double dragFactor = 0.02;
    	int Angle;
-    Sprite shipSprite[10];
+    Sprite shipSprite[6];
     SDL_Surface* explosionIMG,*icon;
-    enum SHIPSTATE {HALTED, UTHRUST, DTHRUST, LTHRUST, RTHRUST, DAMAGED, SKILL};
+    enum SHIPSTATE {HALTED, UTHRUST, LTHRUST, RTHRUST, DAMAGED, SKILL};
     enum SHIPSTATE ShipState;
-    bool momentum=false;
-    bool reversed=false;
     bool shipstill=false;
     bool explosion=false;
     bool skillOnCooldown = false, skillIsActive =false;
@@ -48,7 +46,6 @@ struct Ship{
     void DisplaySkillTimer();
     void Damaged(){ShipState=DAMAGED; Lives--;}
     void Up(){ShipState=UTHRUST; move();}
-    void Down(){ShipState=DTHRUST; move();}
     void Right(){ShipState=RTHRUST; rotateBy(ROTATION);}
     void Left(){ShipState=LTHRUST; rotateBy(-ROTATION);}
     void Halted(){ShipState=HALTED;}

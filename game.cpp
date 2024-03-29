@@ -114,9 +114,6 @@ void UpdateGame()
     if(keystate[SDL_SCANCODE_W]) {
         Player.Up();
     }
-    if(keystate[SDL_SCANCODE_S]) {
-        Player.Down();
-    }
     if(keystate[SDL_SCANCODE_A]) {
         Player.Left();
     }
@@ -129,15 +126,8 @@ void UpdateGame()
     if(keystate[SDL_SCANCODE_E]){
         Player.SkillActivate();
     }
-    //if(Player.skillCool.getTicks()>5000){    
-        //if(!Player.skillAct.isStarted()) Player.skillAct.start();
-    
-    //}
-    if(KeyPressed) Player.momentum=false;
     if(Player.shipstill)
     {
-        if (Player.ShipState == Player.UTHRUST) {Player.momentum = true; Player.reversed = false;}
-        if (Player.ShipState == Player.DTHRUST) {Player.momentum = true; Player.reversed = true;}
         Player.Halted();
         if (Mix_Playing(1) != 0) Mix_FadeOutChannel(1,500);	
     }
