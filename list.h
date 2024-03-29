@@ -10,7 +10,7 @@ struct OBJECT
     int  index;
    	SDL_Surface *Img;
    	int Angle;
-   	int X,Y,W,H,DIRX,DIRY,Life,size;
+   	int X,Y,W,H,DIRX,DIRY,Life,size,type;
    	float FX,FY,DX,DY;
 	double velrate;
 	OBJECT *next;

@@ -68,7 +68,7 @@ void ClearKey(){
 void NewGame(int level)
 {
     gReady = false;
-    int a,tDIRX,tDIRY,tSIZE,tX,tY;
+    int a,tDIRX,tDIRY,tSIZE,tX,tY,tType;
     double tvelrate ; 
     if (asteroids != NULL) deleteList(&asteroids);
     Player.explosion=false;
@@ -100,7 +100,9 @@ void NewGame(int level)
         if(a==0) tvelrate = 1.3;
         else if(a==1) tvelrate = 1.5;
         else tvelrate = 1.7;
-        addAsteroid(tX,tY,tDIRX, tDIRY, tSIZE, tvelrate);
+        a = rand() % 3;
+        tType = a;
+        addAsteroid(tX,tY,tDIRX, tDIRY, tSIZE, tvelrate, tType);
     }
     Mix_PlayMusic(theme, -1);
 }

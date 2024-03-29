@@ -1,10 +1,15 @@
 #include "asteroid.h"
 OBJECT* asteroids=NULL;
-SDL_Surface* ast;
+SDL_Surface* ast,*ast1,*ast2;
+Uint32 collisionCooldown=1000,lastCollided=0;
 void loadAsteroid()
 {
     ast=IMG_Load("assets/images/asteroid.png");
     if(ast==NULL) std::cout<<"Can't load from: assets/images/asteroid.png \n";
+    ast1=IMG_Load("assets/images/asteroid1.png");
+    if(ast1==NULL) std::cout<<"Can't load from: assets/images/asteroid1.png \n";
+    ast2=IMG_Load("assets/images/asteroid2.png");
+    if(ast1==NULL) std::cout<<"Can't load from: assets/images/asteroid2.png \n";
 }
 void DrawAsteroid()
 {
@@ -17,7 +22,7 @@ void DrawAsteroid()
         }
     }
 }
-void addAsteroid(int X,int Y,int DIRX, int DIRY, int size, double vel)
+void addAsteroid(int X,int Y,int DIRX, int DIRY, int size, double vel,int type)
 {
     OBJECT temp;
     temp.index = length(&asteroids);
@@ -45,9 +50,12 @@ void addAsteroid(int X,int Y,int DIRX, int DIRY, int size, double vel)
         temp.H = ASTW2; 
         temp.Life = 3;
     }
-        temp.Img=ast;
-        temp.Angle=0;
-        asteroids = addend(asteroids, newelement(temp)); 
+    if(type == 0) temp.Img=ast;
+    if(type == 1) temp.Img=ast1;
+    if(type == 2) temp.Img=ast2;
+    temp.Angle=0;
+    temp.type=type;
+    asteroids = addend(asteroids, newelement(temp)); 
 }
 void moveAsteroid(Ship &ship)
 {
@@ -62,12 +70,16 @@ void moveAsteroid(Ship &ship)
         if(Collided(rShip,rAst1) && gReady)
         {
             if(!ship.skillIsActive){
-                ship.Damaged();
-                p->DIRX*=-1;
-                p->DIRY*=-1;
-                if(ship.Lives==0){
-                    Mix_HaltChannel(-1);
-                    ship.explosion=true;
+                Uint32 currentTime = SDL_GetTicks();
+                if(currentTime - lastCollided > collisionCooldown){
+                    ship.Damaged();
+                    p->DIRX*=-1;
+                    p->DIRY*=-1;
+                    if(ship.Lives==0){
+                        Mix_HaltChannel(-1);
+                        ship.explosion=true;
+                    }
+                    lastCollided = currentTime;
                 }
             }
             else{

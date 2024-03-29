@@ -20,7 +20,8 @@ OBJECT *newelement(OBJECT temp)
 	newp->Angle = temp.Angle;
 	newp->size = temp.size;
 	newp->velrate = temp.velrate;
-        newp -> next = NULL;
+	newp->type = temp.type;
+    newp -> next = NULL;
 	return newp;
 }
 void RemoveThing(OBJECT **head, int index)

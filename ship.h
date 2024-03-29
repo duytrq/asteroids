@@ -13,7 +13,7 @@ struct Sprite
     SDL_Surface *img;
 };
 struct Ship{
-   	int X,Y,W,H,DX,DY,DIRX,DIRY,Lives,size;
+   	int X,Y,W,H,DX,DY,Lives,size;
    	int Angle;
     Sprite shipSprite[10];
     SDL_Surface* explosionIMG,*icon;
