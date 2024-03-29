@@ -53,21 +53,23 @@ void Intro()
 }
 void Outtro()
 {
-    std::ofstream file("highscores.txt", std::ios::out | std::ios::trunc);
-    std::string outtro, tryagain, yes, no;
+    std::string scores, outtro, tryagain, yes, no;
     SDL_Event e;
     bool keyflag = false;
     SDL_RenderClear(gRen);
     DrawImg(0,0, background);
+    scores = "Your scores: "+std::to_string(points);
     outtro = "Game Over";
     yes = "Yes";
     no = "No";
-    DrawText(outtro,"assets/fonts/RubikIso-Regular.ttf", 160, 205 ,146, 255,255, 0, 0, 0, 0,true); 
+    DrawText(outtro,"assets/fonts/RubikIso-Regular.ttf", 160, 205 ,146, 255, 255, 0, 0, 0, 0,true);
+    DrawText(scores,"assets/fonts/FreeMonoBold.ttf", 36, 0 ,3, 255,255, 255, 0, 0, 0,true); 
     if(points<best){
         tryagain = "You need "+std::to_string(best-points)+" to beat the highscores. Try again?"; 
     }
     else{
         tryagain = "New record have been set. Wanna play again?";
+        std::ofstream file("highscores.txt", std::ios::out | std::ios::trunc);
         if(file.is_open()){
             file << points;
             file.close();

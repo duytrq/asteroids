@@ -1,14 +1,6 @@
 #include "ship.h"
 Ship::Ship()
-{
-    // //ship = new OBJECT();
-    // ship.X=200;
-    // ship.Y=200;
-    // ship.DX = ship.X;
-    // ship.DY = ship.Y;
-    // ship.W = 50;
-    // ship.H = 70;
-    // ship.Angle = 0;  
+{ 
 }
 void Ship::Load()
 {
@@ -18,9 +10,6 @@ void Ship::Load()
     shipSprite[3].img = IMG_Load("assets/images/ship_plume6.png");
     shipSprite[4].img = IMG_Load("assets/images/ship_dmg0.png"); 
     shipSprite[5].img = IMG_Load("assets/images/ship_skill.png");
-    // shipSprite[7].img = IMG_Load("assets/images/ship_dmg0.png");
-    // shipSprite[8].img = IMG_Load("assets/images/ship_dmg1.png");
-    // shipSprite[9].img = IMG_Load("assets/images/ship_skill.png");
     explosionIMG = IMG_Load("assets/images/exp.png");
     icon = IMG_Load("assets/images/skill_icon.png");
 }
@@ -37,7 +26,7 @@ void Ship::Draw(SDL_Surface* img)
     SDL_DestroyTexture(text);
 }
 void Ship::DrawLife(){
-    int X=90,Y=3,W=40,H=40;
+    int X=90,Y=0,W=40,H=40;
     SDL_Texture *text;
     if(!skillIsActive){
         text=SDL_CreateTextureFromSurface(gRen,shipSprite[0].img);
@@ -104,13 +93,9 @@ void Ship::DrawToScreen()
     SDL_Rect rShip, rAst;
 
     if(!explosion){
-        //rShip=getRect(&ship);
-        //SDL_SetRenderDrawColor( gRen, 0x00, 0xFF, 0x00, 0xFF );
-        //SDL_RenderDrawRect(gRen, &rShip);
         Draw(ship);
 
     }
-    //DrawExplosion();
     DrawLife();
     DisplaySkillTimer();
 }
@@ -160,7 +145,6 @@ void Ship::Update()
     if (Y > SCREEN_H+10) {Y = 0;}
     if (X > SCREEN_W + 10) {X = 0;}
     if (X < -10) {X = SCREEN_W;}
-    if(skillIsActive) ShipState = SKILL;
 }
 SDL_Rect Ship::HitBox()
 {

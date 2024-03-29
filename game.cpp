@@ -97,9 +97,9 @@ void NewGame(int level)
         tY = rand() % 720;
         tSIZE = rand() % 3;
         a = rand() %3;
-        if(a==0) tvelrate = 1.3;
-        else if(a==1) tvelrate = 1.5;
-        else tvelrate = 1.7;
+        if(a==0) tvelrate = 1.2;
+        else if(a==1) tvelrate = 1.4;
+        else tvelrate = 1.6;
         a = rand() % 3;
         tType = a;
         addAsteroid(tX,tY,tDIRX, tDIRY, tSIZE, tvelrate, tType);
@@ -130,6 +130,10 @@ void UpdateGame()
     {
         Player.Halted();
         if (Mix_Playing(1) != 0) Mix_FadeOutChannel(1,500);	
+    }
+    if(Player.skillIsActive){
+        Player.ShipState = Player.SKILL;
+        if (Mix_Playing(4) == 0) Mix_PlayChannel(4, shield, 0);
     }
     Player.Update();
     moveAsteroid(Player);

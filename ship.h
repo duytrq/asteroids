@@ -6,8 +6,7 @@
 #include "window.h"
 #include "DrawFunc.h"
 #include "timer.h"
-#define SPEED 12
-#define ROTATION 5.5
+#define ROTATION 5
 struct Sprite
 {
     SDL_Surface *img;
@@ -15,7 +14,7 @@ struct Sprite
 struct Ship{
    	int X,Y,W,H,Lives,size;
     double VX,VY;
-    const double accFactor = 0.2;
+    const double accFactor = 0.25;
     const double dragFactor = 0.02;
    	int Angle;
     Sprite shipSprite[6];

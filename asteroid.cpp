@@ -16,9 +16,6 @@ void DrawAsteroid()
     if (asteroids != NULL) {
         for (int i=0;i<length(&asteroids);i++){
             DrawDynamicObject(getObject(asteroids,i));
-            // rAst=getRect(getObject(asteroids,i));
-            // SDL_SetRenderDrawColor( gRen, 0x00, 0xFF, 0x00, 0xFF );
-            // SDL_RenderDrawRect(gRen, &rAst);
         }
     }
 }
@@ -73,6 +70,7 @@ void moveAsteroid(Ship &ship)
                 Uint32 currentTime = SDL_GetTicks();
                 if(currentTime - lastCollided > collisionCooldown){
                     ship.Damaged();
+                    if (Mix_Playing(5) == 0) Mix_PlayChannel(5, crash, 0);
                     p->DIRX*=-1;
                     p->DIRY*=-1;
                     if(ship.Lives==0){

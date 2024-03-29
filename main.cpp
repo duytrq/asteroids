@@ -35,7 +35,7 @@ void DrawScreen()
     DrawAsteroid();
     DrawProjectile();
     DrawImgRatio(1,1,2,indicator);
-    DrawText(pointText,"assets/fonts/FreeMonoBold.ttf", 20, 130, 32, 255, 255, 255, 0, 0, 0, true);
+    DrawText(pointText,"assets/fonts/FreeMonoBold.ttf", 24, 125, 30, 255, 255, 255, 0, 0, 0, true);
     SDL_RenderPresent(gRen);
 }
 void GameLoop()

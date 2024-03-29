@@ -89,15 +89,15 @@ void moveProjectile()
                 }
                 if(a->Life==2)
                 {
-                    addAsteroid(a->X,a->Y, 1, 1, 0, a->velrate, a->type);
+                    addAsteroid(a->X,a->Y, 1, 1, 0, a->velrate+0.3, a->type);
                     addAsteroid(a->X,a->Y, -1, -1, 0, a->velrate, a->type);
                     deleteObject(&asteroids, j, true);
                     if(p->Img != debris) points+=20;
                 }
                 if(a->Life==3)
                 {
-                    addAsteroid(a->X, a->Y, 1,1,1, a->velrate, a->type);
-	                addAsteroid(a->X, a->Y, -1,-1,1, a->velrate, a->type);
+                    addAsteroid(a->X, a->Y, 1,1,1, a->velrate+0.4, a->type);
+	                addAsteroid(a->X, a->Y, -1,-1,1, a->velrate+0.2, a->type);
 	                addAsteroid(a->X, a->Y, 1,-1,1, a->velrate, a->type);
                     deleteObject(&asteroids, j, true);
                     if(p->Img != debris) points+=30;
