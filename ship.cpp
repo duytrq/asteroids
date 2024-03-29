@@ -116,12 +116,13 @@ void Ship::DrawToScreen()
     DrawLife();
     DisplaySkillTimer();
 }
-void Ship::move(int speed)
+void Ship::move()
 {
-    DX+= speed*sinwithdegree(Angle)*-1;
-    DY+= speed*coswithdegree(Angle);
-    X=round(DX);
-    Y=round(DY);
+    float xN = static_cast<float>(sinwithdegree(Angle));
+    float yN = static_cast<float>(coswithdegree(Angle));
+ 
+    VX += xN * accFactor;
+    VY -= yN * accFactor;
 }
 void Ship::rotateBy(float D){
     float temp;
@@ -153,19 +154,14 @@ void Ship::UpdateSkillState(){
 void Ship::Update()
 {
     UpdateSkillState();
-    if(momentum==true) 
-    {
-        momentum=lerp(&velocity,&timeTemp,100);
-        if(reversed==false) move(-velocity);
-        else move(velocity);
-    }
-    else{
-        velocity=SPEED;
-    }
-    if (Y < -10) {Y = SCREEN_H; DY = SCREEN_H;}
-    if (Y > SCREEN_H+10) {Y = 0; DY = 0;}
-    if (X > SCREEN_W + 10) {X = 0; DX = 0;}
-    if (X < -10) {X = SCREEN_W; DX = SCREEN_W;}
+    X += VX;
+    Y += VY;
+    VX = VX - VX * dragFactor;
+    VY = VY - VY * dragFactor;
+    if (Y < -10) {Y = SCREEN_H;}
+    if (Y > SCREEN_H+10) {Y = 0;}
+    if (X > SCREEN_W + 10) {X = 0;}
+    if (X < -10) {X = SCREEN_W;}
     if(skillIsActive) ShipState = SKILL;
 }
 SDL_Rect Ship::HitBox()

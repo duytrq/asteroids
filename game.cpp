@@ -77,8 +77,8 @@ void NewGame(int level)
     Player.Y=200;
     lastX=Player.X;
     lastY=Player.Y;
-    Player.DX = Player.X;
-    Player.DY = Player.Y;
+    Player.VX = 0;
+    Player.VY = 0;
     Player.W = 50;
     Player.H = 70;
     Player.Angle = 0;  

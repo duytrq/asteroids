@@ -13,7 +13,10 @@ struct Sprite
     SDL_Surface *img;
 };
 struct Ship{
-   	int X,Y,W,H,DX,DY,Lives,size;
+   	int X,Y,W,H,Lives,size;
+    double VX,VY;
+    const double accFactor = 0.2;
+    const double dragFactor = 0.02;
    	int Angle;
     Sprite shipSprite[10];
     SDL_Surface* explosionIMG,*icon;
@@ -29,11 +32,10 @@ struct Ship{
     const Uint32 skillDuration=2000;
     const Uint32 skillCooldown=5000;
     Uint32 skillLastUsed = 0;
-    double velocity = SPEED;
     double shipShootTime;
     Ship();
     void Load();
-    void move(int speed);
+    void move();
     void Update();
     void ShipShoot();
     void Draw(SDL_Surface *img);
@@ -45,8 +47,8 @@ struct Ship{
     void UpdateSkillState();
     void DisplaySkillTimer();
     void Damaged(){ShipState=DAMAGED; Lives--;}
-    void Up(){ShipState=UTHRUST; move(-SPEED);}
-    void Down(){ShipState=DTHRUST; move(SPEED);}
+    void Up(){ShipState=UTHRUST; move();}
+    void Down(){ShipState=DTHRUST; move();}
     void Right(){ShipState=RTHRUST; rotateBy(ROTATION);}
     void Left(){ShipState=LTHRUST; rotateBy(-ROTATION);}
     void Halted(){ShipState=HALTED;}
