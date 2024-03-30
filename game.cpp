@@ -68,9 +68,10 @@ void ClearKey(){
 void NewGame(int level)
 {
     gReady = false;
-    int a,tDIRX,tDIRY,tSIZE,tX,tY,tType;
+    int a,e,tDIRX,tDIRY,tSIZE,tX,tY,tType;
     double tvelrate ; 
     if (asteroids != NULL) deleteList(&asteroids);
+    if (enemy != NULL) deleteList(&enemy);
     Player.explosion=false;
     Player.Lives = 3; 
     Player.X=200; 
@@ -85,7 +86,7 @@ void NewGame(int level)
     Player.skillAct.start();
     lastAngle = Player.Angle;
     srand((unsigned) time(&t));
-    for(int i=0;i<level*3;i++)
+    for(int i=0;i<level*2;i++)
     {
         a = rand() % 2;
         if (a==0) tDIRX = 1;
@@ -103,6 +104,19 @@ void NewGame(int level)
         a = rand() % 3;
         tType = a;
         addAsteroid(tX,tY,tDIRX, tDIRY, tSIZE, tvelrate, tType);
+    }
+    for(int i=0;i<level;i++){
+        e = rand() % 2;
+        if(e==0) tDIRX = 1;
+        else tDIRX = -1;
+        e = rand() % 2;
+        if(e==0) tDIRY = 1;
+        else tDIRY = -1;
+        tX = rand() % 1280;
+        tY = rand() % 720;
+        e = rand()%2 +1;
+        tType = e;
+        addEnemy(tX,tY,tDIRX,tDIRY,tType);
     }
     Mix_PlayMusic(theme, -1);
 }
@@ -137,10 +151,11 @@ void UpdateGame()
     }
     Player.Update();
     moveAsteroid(Player);
+    moveEnemy(Player);
     moveProjectile();
     if (Player.X != lastX || Player.Y != lastY || Player.Angle != lastAngle) Player.shipstill = false;
     else Player.shipstill = true;
-    if(length(&asteroids) == 0){
+    if(length(&asteroids) == 0 && length(&enemy)==0){
         Mix_HaltChannel(-1);
         deleteList(&projectiles);
         SDL_Delay(100);

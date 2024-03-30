@@ -34,7 +34,6 @@ struct Ship{
     void Load();
     void move();
     void Update();
-    void ShipShoot();
     void Draw(SDL_Surface *img);
     void DrawToScreen();
     void DrawLife();

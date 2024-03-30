@@ -5,6 +5,7 @@
 #include "DrawFunc.h"
 #include "asteroid.h"
 #include "projectile.h"
+#include "enemy.h"
 extern Ship Player;
 extern SDL_Event ev;
 extern bool KeyPressed;

@@ -20,6 +20,7 @@ void loadAssets()
     loadHUD();
     loadProjectileIMG();
     loadAsteroid();
+    loadEnemyIMG();
     Player.Load();
     loadAudio();
 }
@@ -30,9 +31,9 @@ void DrawScreen()
     DrawImg(0,0,background);
     
     SDL_Rect rAst;
-
     Player.DrawToScreen();
     DrawAsteroid();
+    drawEnemy();
     DrawProjectile();
     DrawImgRatio(1,1,2,indicator);
     DrawText(pointText,"assets/fonts/FreeMonoBold.ttf", 24, 125, 30, 255, 255, 255, 0, 0, 0, true);
