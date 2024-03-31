@@ -84,39 +84,3 @@ SDL_Rect getRect(OBJECT *obj)
     SDL_Rect t={obj->X+10,obj->Y+10,obj->W-20,obj->H-20};
     return t;
 }
-bool lerp(double *value, Uint32 *time, int ms){
-    bool res;
-    if (SDL_GetTicks() - *time < ms) {
-        res = true;
-    } else{
-        *time = SDL_GetTicks();
-        if (*value > 0) {
-        *value = *value -3;
-        res = true;
-        }
-        else {
-            *value = 0;
-        res = false;
-        }
-    }
-    return res;
-}
-// void timer(int *ticks, Uint8 *time, int ms){
-
-//  if (SDL_GetTicks() - *time < ms) {
-//     //value = TRUE;
-//    //if (Mix_Playing(3) == 0) Mix_PlayChannel(3, expsnd, 0);
-//  } else{
-//    *time = SDL_GetTicks();
-//    if (*ticks < 6) {
-//        *ticks = *ticks +1;
-// 	//value = TRUE;
-//    }else {
-//         *ticks = 0;
-//  	//value = FALSE;
-// 	//currentLevel = 1;
-// 	//NewGame(currentLevel);
-// 	}
-// }
- 
-// }

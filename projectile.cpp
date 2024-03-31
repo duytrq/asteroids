@@ -1,14 +1,13 @@
 #include "projectile.h"
 OBJECT *projectiles = NULL;
-SDL_Surface* bullet,*debris;
+SDL_Surface* bullet,*debris, *mbullet;
 void loadProjectileIMG()
 {
     bullet=IMG_Load("assets/images/bullet.png");
-    if(bullet==NULL) std::cout<<"assets/images/bullet.png\n";
     debris=IMG_Load("assets/images/debris.png");
-    if(debris==NULL) std::cout<<"asstets/images/debris.png\n";
+    mbullet=IMG_Load("assets/images/bullet3.png");
 }
-void LaunchProjectile(double X, double Y, double DX, double DY, SDL_Surface *Img, int Life, Ship* ship){
+void LaunchProjectile(double X, double Y, double DX, double DY, SDL_Surface *Img, int Life, int type, Ship* ship){
     OBJECT p;
     if (projectiles == NULL) 
         p.index = 0;
@@ -16,9 +15,10 @@ void LaunchProjectile(double X, double Y, double DX, double DY, SDL_Surface *Img
         p.index = length(&projectiles);
     } 
     p.Img = Img;
+    p.type = type;
     p.W = 16;
     p.H = 16;
-    if (Life == -1 && ship!=NULL) {
+    if (type == 1) {
     //ship projectile
         p.Angle = ship->Angle + 90;
         p.FX = (ship->X +(ship->W-10)/2);
@@ -27,7 +27,16 @@ void LaunchProjectile(double X, double Y, double DX, double DY, SDL_Surface *Img
         p.DY = DY;
         p.X = round(p.FX);
         p.Y = round(p.FY);
-    } else{
+    } 
+    if (type == 0 ){
+        p.X = X;
+        p.Y = Y;
+        p.FX = X;
+        p.FY = Y;
+        p.DX = DX;
+        p.DY = DY;
+    }
+    if (type == 3){
         p.X = X;
         p.Y = Y;
         p.FX = X;
@@ -46,24 +55,38 @@ void DrawProjectile()
         }
     }
 }
-void moveProjectile()
+void moveProjectile(Ship &ship)
 {
     OBJECT *p;
     bool bCol=false;
     for(int i=0;i<length(&projectiles);i++)
     {
         p=getObject(projectiles,i);
-        if(p->Life==-1)
+        if(p->type == 1)
         {
             p->FX+= (p->DX *coswithdegree(p->Angle))*-1;
             p->FY+= (p->DY *sinwithdegree(p->Angle))*-1;
             p->X=round(p->FX);
             p->Y=round(p->FY);
         }
-        else
+        if(p->type == 0)
         {
             p->FX+= p->DX;
             p->FY+= p->DY;
+            p->X=round(p->FX);
+            p->Y=round(p->FY);
+        }
+        if(p->type == 2)
+        {
+            p->FX+= p->DX;
+            p->FY+= p->DY;
+            p->X=round(p->FX);
+            p->Y=round(p->FY);
+        }
+        if(p->type ==3)
+        {
+            p->FX+= 5*p->DX;
+            p->FY+= 5*p->DY;
             p->X=round(p->FX);
             p->Y=round(p->FY);
         }
@@ -72,7 +95,17 @@ void moveProjectile()
         {
             deleteObject(&projectiles,i,true);
         }
+        SDL_Rect rShip = ship.HitBox();
         SDL_Rect pj=getRect(p);
+        if(p->type >=2 && Collided(pj, rShip)){
+            ship.Damaged();
+            if (Mix_Playing(5) == 0) Mix_PlayChannel(5, crash, 0);
+            if(ship.Lives==0){
+                Mix_HaltChannel(-1);
+                ship.explosion=true;
+            }
+            deleteObject(&projectiles,i,true);
+        }
         for(int j=0;j<length(&asteroids);j++)
         {
             OBJECT *a;
@@ -83,7 +116,7 @@ void moveProjectile()
                 if(a->Life==1)
                 {
                     deleteObject(&asteroids, j, true);
-                    LaunchPoof(a->X,a->Y, debris, 20);
+                    LaunchPoof(a->X,a->Y, debris, 20, 0);
                     if(p->Img != debris) points+=10;
                     continue;
                 }
@@ -105,7 +138,7 @@ void moveProjectile()
                 deleteObject(&projectiles,i,true);
                 bCol=true;
                 break;
-                }
+            }
             
         }if(bCol) break;
     }
@@ -116,17 +149,28 @@ void ShipShoot(Ship *ship)
     { 
         Mix_PlayChannel(2, shot, 0);
         ship->shipShootTime=SDL_GetTicks();
-        LaunchProjectile(ship->X+16,ship->Y-2,20,20,bullet,-1,ship);
+        LaunchProjectile(ship->X+16,ship->Y-2,20,20,bullet,-1,1,ship);
     }
 }
-void LaunchPoof(int X, int Y, SDL_Surface * Img, int life)
+void LaunchPoof(int X, int Y, SDL_Surface * Img, int life, int type)
 {
-      LaunchProjectile(X, Y, -1, -0.4, Img, life);
-      LaunchProjectile(X, Y, -0.2, -0.7, Img,life);
-      LaunchProjectile(X, Y, 0.3, -0.6, Img,life);
-      LaunchProjectile(X, Y, 0.96, -0.3, Img,life);
-      LaunchProjectile(X, Y, -0.8, 0.5, Img,life);
-      LaunchProjectile(X, Y, -0.3, 0.65, Img,life);
-      LaunchProjectile(X, Y, 0.34, 0.67, Img,life);
-      LaunchProjectile(X, Y, 0.93, 0.31, Img,life);
+    LaunchProjectile(X, Y, -1, -0.4, Img, life,type);
+    LaunchProjectile(X, Y, -0.2, -0.7, Img,life,type);
+    LaunchProjectile(X, Y, 0.3, -0.6, Img,life,type);
+    LaunchProjectile(X, Y, 0.96, -0.3, Img,life,type);
+    LaunchProjectile(X, Y, -0.8, 0.5, Img,life,type);
+    LaunchProjectile(X, Y, -0.3, 0.65, Img,life,type);
+    LaunchProjectile(X, Y, 0.34, 0.67, Img,life,type);
+    LaunchProjectile(X, Y, 0.93, 0.31, Img,life,type);
+}
+void LaunchBulletCircular(int X, int Y, SDL_Surface* Img, int life, int type)
+{
+    LaunchProjectile(X, Y, 1, 0, Img, life,type);
+    LaunchProjectile(X, Y, 0.71, 0.71, Img,life,type);
+    LaunchProjectile(X, Y, 0, 1, Img,life,type);
+    LaunchProjectile(X, Y, -0.71, 0.71, Img,life,type);
+    LaunchProjectile(X, Y, -1, 0, Img,life,type);
+    LaunchProjectile(X, Y, -0.71, -0.71, Img,life,type);
+    LaunchProjectile(X, Y, 0, -1, Img,life,type);
+    LaunchProjectile(X, Y, 0.71, -0.71, Img,life,type);
 }

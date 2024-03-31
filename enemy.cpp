@@ -21,13 +21,17 @@ void addEnemy(int X,int Y,int DIRX, int DIRY,int type)
         temp.Img=alien;
         temp.W = 80;
         temp.H = 80;
+        temp.velrate = 1.2;
     }
     if(type == 2) {
         temp.Img=monster;
         temp.W = 50;
         temp.H = 50;
+        temp.velrate = 2.5;
     }
     temp.type=type;
+    temp.lastDirchange = 0;
+    temp.Angle = 0;
     enemy = addend(enemy, newelement(temp)); 
 }
 void drawEnemy()
@@ -76,18 +80,41 @@ void moveEnemy(Ship &ship)
                 }
             }
         }
-        if(p){
-            p->DX=p->DX + p->DIRX;
-            p->DY=p->DY + p->DIRY;
-            p->DIRX*=-1;
-            p->DIRY*=-1;
-            if(p->type==2) p->Angle+=5;
+        if(p->type==1){
+            if(SDL_GetTicks()-(p->lastDirchange)>1000){
+                if(rand()%2) p->DIRY*=-1;
+
+                p->lastDirchange = SDL_GetTicks();
+
+            }
+            p->DX=p->DX + p->velrate*p->DIRX;
+            p->DY=p->DY + p->velrate*p->DIRY;
             p->X = round(p->DX);
             p->Y = round(p->DY);
             if(p->X < -10){p->X = SCREEN_W;p->DX = SCREEN_W;}
             if(p->X > SCREEN_W){p->X=0;p->DX=0;}
             if(p->Y < -10){p->Y = SCREEN_H;p->DY = SCREEN_H;}
             if(p->Y > SCREEN_H){p->Y=0;p->DY=0;}
+        }
+        if(p->type==2 && gReady){
+            double drX = ship.X - p->X;
+            double drY = ship.Y - p->Y;
+            double distance = sqrt(drX*drX+drY*drY);
+            if(distance > 0){
+                drX/=distance;
+                drY/=distance;
+            }
+            p->Angle+=5;
+            p->DX = p->DX + p->velrate*drX;
+            p->DY = p->DY + p->velrate*drY;
+            p->X = round(p->DX);
+            p->Y = round(p->DY);
+            if(distance < 150){
+                int blowPosX= p->X;
+                int blowPosY= p->Y;
+                LaunchBulletCircular(blowPosX,blowPosY,mbullet,100,3);
+                deleteObject(&enemy,i,true);
+            }
         }
     }
 
