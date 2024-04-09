@@ -76,6 +76,7 @@ void moveAsteroid(Ship &ship)
                     if(ship.Lives==0){
                         Mix_HaltChannel(-1);
                         ship.explosion=true;
+                        ship.skillAct.pause();
                     }
                     lastCollided = currentTime;
                 }

@@ -1,7 +1,7 @@
 #include "game.h"
 Ship Player;
 SDL_Event ev;
-bool KeyPressed=false;
+bool KeyPressed=false,addMonster;
 long keystate[1000];
 int lastX,lastY,lastAngle;
 void HandleKey(long sym, bool down)
@@ -49,6 +49,7 @@ void HandleEvents()
                 HandleKey(e.key.keysym.sym,true);
                 KeyPressed=true;
                 gReady = true;
+                if(!Player.skillAct.isStarted()) Player.skillAct.start();
                 break;
             case SDL_KEYUP:
                 HandleKey(e.key.keysym.sym,false);
@@ -67,7 +68,7 @@ void ClearKey(){
 }
 void NewGame(int level)
 {
-    gReady = false;
+    gReady = false; addMonster=false;
     int a,e,tDIRX,tDIRY,tSIZE,tX,tY,tType;
     double tvelrate ; 
     if (asteroids != NULL) deleteList(&asteroids);
@@ -83,41 +84,37 @@ void NewGame(int level)
     Player.W = 50;
     Player.H = 70;
     Player.Angle = 0;  
-    Player.skillAct.start();
     lastAngle = Player.Angle;
     srand((unsigned) time(&t));
-    // for(int i=0;i<level*2;i++)
-    // {
-    //     a = rand() % 2;
-    //     if (a==0) tDIRX = 1;
-    //     else tDIRX = -1;
-    //     a = rand() % 2;
-    //     if (a==0) tDIRY = 1;
-    //     else tDIRY = -1; 
-    //     tX = rand() % 1280;
-    //     tY = rand() % 720;
-    //     tSIZE = rand() % 3;
-    //     a = rand() %3;
-    //     if(a==0) tvelrate = 1.2;
-    //     else if(a==1) tvelrate = 1.4;
-    //     else tvelrate = 1.6;
-    //     a = rand() % 3;
-    //     tType = a;
-    //     addAsteroid(tX,tY,tDIRX, tDIRY, tSIZE, tvelrate, tType);
-    // }
-    for(int i=0;i<level;i++){
-        e = rand() % 2;
-        if(e==0) tDIRX = 1;
+    for(int i=0;i<level*2;i++)
+    {
+        a = rand() % 2;
+        if (a==0) tDIRX = 1;
         else tDIRX = -1;
-        e = rand() % 2;
-        if(e==0) tDIRY = 1;
-        else tDIRY = -1;
+        a = rand() % 2;
+        if (a==0) tDIRY = 1;
+        else tDIRY = -1; 
         tX = rand() % 1280;
         tY = rand() % 720;
-        e = rand()%2 +1;
-        tType = e;
-        addEnemy(tX,tY,tDIRX,tDIRY,tType);
+        tSIZE = rand() % 3;
+        a = rand() %3;
+        if(a==0) tvelrate = 1.2;
+        else if(a==1) tvelrate = 1.4;
+        else tvelrate = 1.6;
+        a = rand() % 3;
+        tType = a;
+        addAsteroid(tX,tY,tDIRX, tDIRY, tSIZE, tvelrate, tType);
     }
+    e = rand() % 2;
+    if(e==0) tDIRX = 1;
+    else tDIRX = -1;
+    e = rand() % 2;
+    if(e==0) tDIRY = 1;
+    else tDIRY = -1;
+    tX = rand() % 1280;
+    tY = rand() % 720;
+    e = rand()%2 +1;
+    addEnemy(tX,tY,tDIRX,tDIRY,1);
     Mix_PlayMusic(theme, -1);
 }
 void UpdateGame()
@@ -155,7 +152,34 @@ void UpdateGame()
     moveProjectile(Player);
     if (Player.X != lastX || Player.Y != lastY || Player.Angle != lastAngle) Player.shipstill = false;
     else Player.shipstill = true;
-    if(length(&asteroids) == 0 && length(&enemy)==0){
+    if(length(&asteroids) == currLevel && !addMonster)
+    {
+        int e,tX,tY,tDIRX,tDIRY;
+        double dirX,dirY,distance;
+        for(int i=0;i<currLevel;i++){
+            e = rand() % 2;
+            if(e==0) tDIRX = 1;
+            else tDIRX = -1;
+            e = rand() % 2;
+            if(e==0) tDIRY = 1;
+            else tDIRY = -1;
+            tX = rand() % 1280;
+            tY = rand() % 720;
+            dirX=Player.X-tX;
+            dirY=Player.Y-tY;
+            distance=sqrt(dirX*dirX+dirY*dirY);
+            while(distance<300){
+                tX = rand() % 1280;
+                tY = rand() % 720;
+                dirX=Player.X-tX;
+                dirY=Player.Y-tY;
+                distance=sqrt(dirX*dirX+dirY*dirY);
+            }
+            addEnemy(tX,tY,tDIRX,tDIRY,2);
+        }
+        addMonster = true;
+    }
+    if(length(&asteroids) == 0 && length(&enemy)==0 && length(&projectiles)==0){
         Mix_HaltChannel(-1);
         deleteList(&projectiles);
         SDL_Delay(100);

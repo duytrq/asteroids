@@ -81,9 +81,18 @@ void moveEnemy(Ship &ship)
             }
         }
         if(p->type==1){
-            if(SDL_GetTicks()-(p->lastDirchange)>1000){
+            if(SDL_GetTicks()-(p->lastDirchange)>2000){
                 if(rand()%2) p->DIRY*=-1;
-
+                double drX = ship.X - p->X;
+                double drY = ship.Y - p->Y;
+                double distance = sqrt(drX*drX+drY*drY);
+                if(distance > 0){
+                    drX/=distance;
+                    drY/=distance;
+                }
+                if(gReady) {
+                    LaunchProjectile(p->X,p->Y+p->H/2,drX,drY,mbullet,100,2);
+                }
                 p->lastDirchange = SDL_GetTicks();
 
             }
@@ -112,7 +121,7 @@ void moveEnemy(Ship &ship)
             if(distance < 150){
                 int blowPosX= p->X;
                 int blowPosY= p->Y;
-                LaunchBulletCircular(blowPosX,blowPosY,mbullet,100,3);
+                LaunchBulletCircular(blowPosX,blowPosY,abullet,100,3);
                 deleteObject(&enemy,i,true);
             }
         }

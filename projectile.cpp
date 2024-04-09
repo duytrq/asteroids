@@ -1,11 +1,12 @@
 #include "projectile.h"
 OBJECT *projectiles = NULL;
-SDL_Surface* bullet,*debris, *mbullet;
+SDL_Surface* bullet,*debris, *mbullet, *abullet;
 void loadProjectileIMG()
 {
     bullet=IMG_Load("assets/images/bullet.png");
     debris=IMG_Load("assets/images/debris.png");
-    mbullet=IMG_Load("assets/images/bullet3.png");
+    mbullet=IMG_Load("assets/images/bullet2.png");
+    abullet=IMG_Load("assets/images/bullet3.png");
 }
 void LaunchProjectile(double X, double Y, double DX, double DY, SDL_Surface *Img, int Life, int type, Ship* ship){
     OBJECT p;
@@ -29,6 +30,14 @@ void LaunchProjectile(double X, double Y, double DX, double DY, SDL_Surface *Img
         p.Y = round(p.FY);
     } 
     if (type == 0 ){
+        p.X = X;
+        p.Y = Y;
+        p.FX = X;
+        p.FY = Y;
+        p.DX = DX;
+        p.DY = DY;
+    }
+    if (type == 2){
         p.X = X;
         p.Y = Y;
         p.FX = X;
@@ -78,8 +87,8 @@ void moveProjectile(Ship &ship)
         }
         if(p->type == 2)
         {
-            p->FX+= p->DX;
-            p->FY+= p->DY;
+            p->FX+= 10*p->DX;
+            p->FY+= 10*p->DY;
             p->X=round(p->FX);
             p->Y=round(p->FY);
         }
@@ -111,7 +120,7 @@ void moveProjectile(Ship &ship)
             OBJECT *a;
             a=getObject(asteroids,j);
             SDL_Rect ast=getRect(a);
-            if(Collided(pj,ast) && p->Life==-1)
+            if(Collided(pj,ast) && p->type!=0)
             {
                 if(a->Life==1)
                 {
@@ -145,7 +154,7 @@ void moveProjectile(Ship &ship)
 }
 void ShipShoot(Ship *ship)
 {
-    if(SDL_GetTicks()-ship->shipShootTime>=150)
+    if(SDL_GetTicks()-ship->shipShootTime>=200 )
     { 
         Mix_PlayChannel(2, shot, 0);
         ship->shipShootTime=SDL_GetTicks();

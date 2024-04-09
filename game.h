@@ -8,7 +8,7 @@
 #include "enemy.h"
 extern Ship Player;
 extern SDL_Event ev;
-extern bool KeyPressed;
+extern bool KeyPressed,addMonster;
 extern long keystate[1000];
 extern int lastX,lastY,lastAngle;
 void HandleEvents();
