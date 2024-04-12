@@ -3,7 +3,7 @@
 #include "window.h"
 #include "asteroid.h"
 extern OBJECT* projectiles;
-extern SDL_Surface *bullet, *debris, *mbullet,*abullet,*sbullet,*blackhole,*repair;
+extern SDL_Surface *bullet, *debris, *mbullet,*abullet,*blackhole,*repair;
 extern bool shootspecial;
 void loadProjectileIMG();
 void LaunchProjectile(double X, double Y, double DX, double DY, SDL_Surface *Img, int Life, int type, Ship *ship=NULL); 

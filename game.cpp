@@ -48,8 +48,7 @@ void HandleEvents()
             case SDL_KEYDOWN:
                 HandleKey(e.key.keysym.sym,true);
                 KeyPressed=true;
-                gReady = true;
-                if(!Player.skillAct.isStarted()) Player.skillAct.start();
+                gReady=true;
                 break;
             case SDL_KEYUP:
                 HandleKey(e.key.keysym.sym,false);
@@ -73,8 +72,10 @@ void NewGame(int level)
     double tvelrate ; 
     if (asteroids != NULL) deleteList(&asteroids);
     if (enemy != NULL) deleteList(&enemy);
+    if (projectiles != NULL) deleteList(&projectiles);
+    Player.skillAct.start();
     Player.explosion=false;
-    Player.Lives = 3; 
+    if(Player.Lives==0) Player.Lives = 3; 
     Player.X=200; 
     Player.Y=200;
     lastX=Player.X;

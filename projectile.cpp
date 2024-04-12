@@ -1,6 +1,6 @@
 #include "projectile.h"
 OBJECT *projectiles = NULL;
-SDL_Surface* bullet,*debris, *mbullet, *abullet,*sbullet,*blackhole,*repair;
+SDL_Surface* bullet,*debris, *mbullet, *abullet,*blackhole,*repair;
 bool shootspecial=false,bexist=false;
 void loadProjectileIMG()
 {
@@ -8,7 +8,6 @@ void loadProjectileIMG()
     debris=IMG_Load("assets/images/debris.png");
     mbullet=IMG_Load("assets/images/bullet2.png");
     abullet=IMG_Load("assets/images/bullet3.png");
-    sbullet=IMG_Load("assets/images/sbullet.png");
     blackhole=IMG_Load("assets/images/blackhole.png");
     repair=IMG_Load("assets/images/repair.png");
 }
@@ -64,8 +63,8 @@ void LaunchProjectile(double X, double Y, double DX, double DY, SDL_Surface *Img
         p.DY = DY;
     }
     if (type == 4){
-        p.W = 25;
-        p.H = 25;
+        p.W = 32;
+        p.H = 32;
         p.X = X;
         p.Y = Y;
         p.FX = X;
@@ -154,7 +153,7 @@ void moveProjectile(Ship &ship)
                 }
             }
             else{
-                if(p->Img==sbullet) shootspecial=true;
+                if(p->Img==blackhole) shootspecial=true;
                 if(p->Img==repair) ship.Lives++;
             }
             deleteObject(&projectiles,i,true);
@@ -196,15 +195,15 @@ void moveProjectile(Ship &ship)
                     deleteObject(&asteroids, j, true);
                     if(p->Img != debris) points+=30;
                 }
-                
+                srand((unsigned) time(&t));
                 int e=rand()%10;
                 if(e==1){
-                    LaunchProjectile(p->X,p->Y,1,-1,sbullet,200,4);
+                    LaunchProjectile(p->X,p->Y,1,-1,blackhole,250,4);
                 }
-                else if(e>=2 && e<=3){
-                    LaunchProjectile(p->X,p->Y,1,-1,repair,200,4);
+                else if(e==0){
+                    LaunchProjectile(p->X,p->Y,1,-1,repair,250,4);
                 }
-                if(p->type==1 && p->Img==sbullet)
+                if(p->type==1 && p->Img==blackhole)
                 {
                     LaunchProjectile(p->X,p->Y,0,0,blackhole,100,5);
                 }
@@ -225,7 +224,7 @@ void ShipShoot(Ship *ship)
             LaunchProjectile(ship->X+16,ship->Y-2,15,15,bullet,-1,1,ship);
         }
         else{
-            LaunchProjectile(ship->X+16,ship->Y-2,20,20,sbullet,-1,1,ship);
+            LaunchProjectile(ship->X+16,ship->Y-2,20,20,blackhole,-1,1,ship);
             shootspecial=false;
         }
         ship->shipShootTime=SDL_GetTicks();
