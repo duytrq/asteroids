@@ -23,7 +23,7 @@ extern int currLevel;
 extern bool running, gReady;
 extern SDL_Surface *background, *indicator;
 extern Mix_Music* theme;
-extern Mix_Chunk* sound, *intro, *shot, *expsnd, *shield, *crash;
+extern Mix_Chunk* sound, *intro, *shot, *expsnd, *shield, *crash,*hit,*eshot;
 bool InitVideo();
 bool InitAudio();
 void loadHUD();

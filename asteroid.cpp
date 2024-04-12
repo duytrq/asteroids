@@ -19,18 +19,18 @@ void DrawAsteroid()
         }
     }
 }
-void addAsteroid(int X,int Y,int DIRX, int DIRY, int size, double vel,int type)
+void addAsteroid(int X,int Y,int DX, int DY, int size, double rotation,int type)
 {
     OBJECT temp;
     temp.index = length(&asteroids);
-    temp.DIRX = DIRX;
-    temp.DIRY = DIRY;
+    // temp.DIRX = DIRX;
+    // temp.DIRY = DIRY;
     temp.X = X;
     temp.Y = Y;
-    temp.DX = temp.X;
-    temp.DY = temp.Y;
+    temp.DX = DX;
+    temp.DY = DY;
     temp.size=size;
-    temp.velrate = vel;
+    temp.rotFactor = rotation;
     //std::cout<<temp.velrate<<std::endl;
     if (temp.size==0){
         temp.W = ASTH0;
@@ -76,7 +76,6 @@ void moveAsteroid(Ship &ship)
                     if(ship.Lives==0){
                         Mix_HaltChannel(-1);
                         ship.explosion=true;
-                        ship.skillAct.pause();
                     }
                     lastCollided = currentTime;
                 }
@@ -85,17 +84,17 @@ void moveAsteroid(Ship &ship)
                 deleteObject(&asteroids, i, true);
             }
         }
-        p->DX=p->DX + (p->velrate * p->DIRX);
-        p->DY=p->DY + (p->velrate * p->DIRY);
-        p->X = round(p->DX);
-        p->Y = round(p->DY);
+        // p->DX=p->DX + (p->velrate * p->DIRX);
+        // p->DY=p->DY + (p->velrate * p->DIRY);
+        p->X = round(p->X+p->DX);
+        p->Y = round(p->Y+p->DY);
         // p->X=p->DX;
         // p->Y=p->DY;
-        p->Angle+=3;
-        if(p->X < -10){p->X = SCREEN_W;p->DX = SCREEN_W;}
-        if(p->X > SCREEN_W){p->X=0;p->DX=0;}
-        if(p->Y < -10){p->Y = SCREEN_H;p->DY = SCREEN_H;}
-        if(p->Y > SCREEN_H){p->Y=0;p->DY=0;}
+        p->Angle+=p->rotFactor;
+        if(p->X < -10){p->X = SCREEN_W;}
+        if(p->X > SCREEN_W){p->X=0;}
+        if(p->Y < -10){p->Y = SCREEN_H;}
+        if(p->Y > SCREEN_H){p->Y=0;}
     }
     
 }

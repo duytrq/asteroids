@@ -92,6 +92,7 @@ void DrawProjectile()
 }
 void moveProjectile(Ship &ship)
 {
+    srand((unsigned) time(&t));
     OBJECT *p;
     bool bCol=false;
     for(int i=0;i<length(&projectiles);i++)
@@ -145,11 +146,13 @@ void moveProjectile(Ship &ship)
         SDL_Rect pj=getRect(p);
         if(p->type >=2 && Collided(pj, rShip)){
             if(p->type!=4){
-                ship.Damaged();
-                if (Mix_Playing(5) == 0) Mix_PlayChannel(5, crash, 0);
-                if(ship.Lives==0){
-                    Mix_HaltChannel(-1);
-                    ship.explosion=true;
+                if(!ship.skillIsActive){
+                    ship.Damaged();
+                    if (Mix_Playing(5) == 0) Mix_PlayChannel(5, crash, 0);
+                    if(ship.Lives==0){
+                        Mix_HaltChannel(-1);
+                        ship.explosion=true;
+                    }
                 }
             }
             else{
@@ -168,12 +171,13 @@ void moveProjectile(Ship &ship)
                 DIRY=p->Y+100-a->Y;
                 distance=sqrt(DIRX*DIRX+DIRY*DIRY);
                 
-                a->DIRX=4*DIRX/distance;
-                a->DIRY=4*DIRY/distance;
+                a->DX=4*DIRX/distance;
+                a->DY=4*DIRY/distance;
             }
             SDL_Rect ast=getRect(a);
             if(Collided(pj,ast) && p->type!=0 && p->type!=4)
             {
+                if (Mix_Playing(6) == 0) Mix_PlayChannel(6, hit, 0);
                 if(a->Life==1)
                 {
                     deleteObject(&asteroids, j, true);
@@ -182,25 +186,23 @@ void moveProjectile(Ship &ship)
                 }
                 if(a->Life==2)
                 {
-                    addAsteroid(a->X,a->Y, 1, 1, 0, a->velrate+0.3, a->type);
-                    addAsteroid(a->X,a->Y, -1, -1, 0, a->velrate, a->type);
+                    addAsteroid(a->X,a->Y, 2, -2, 0, a->rotFactor+0.3, a->type);
+                    addAsteroid(a->X,a->Y, -2.5, 2.5, 0, a->rotFactor, a->type);
                     deleteObject(&asteroids, j, true);
                     if(p->Img != debris) points+=20;
                 }
                 if(a->Life==3)
                 {
-                    addAsteroid(a->X, a->Y, 1,1,1, a->velrate+0.4, a->type);
-	                addAsteroid(a->X, a->Y, -1,-1,1, a->velrate+0.2, a->type);
-	                addAsteroid(a->X, a->Y, 1,-1,1, a->velrate, a->type);
+                    addAsteroid(a->X, a->Y, 2,2,0, a->rotFactor+0.4, a->type);
+	                addAsteroid(a->X, a->Y, -2,-2,0, a->rotFactor+0.2, a->type);
+	                addAsteroid(a->X, a->Y, 3,-3,0, a->rotFactor, a->type);
                     deleteObject(&asteroids, j, true);
                     if(p->Img != debris) points+=30;
                 }
-                srand((unsigned) time(&t));
-                int e=rand()%10;
-                if(e==1){
+                if(rand()%10==1){
                     LaunchProjectile(p->X,p->Y,1,-1,blackhole,250,4);
                 }
-                else if(e==0){
+                else if(rand()%10==0){
                     LaunchProjectile(p->X,p->Y,1,-1,repair,250,4);
                 }
                 if(p->type==1 && p->Img==blackhole)

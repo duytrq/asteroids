@@ -17,5 +17,5 @@ extern Uint32 collisionCooldown,lastCollided;
 void loadAsteroid();
 void DrawAsteroid();
 void moveAsteroid(Ship &ship);
-void addAsteroid(int X,int Y,int DIRX, int DIRY, int size, double vel, int type);
+void addAsteroid(int X,int Y,int DX, int DY, int size, double vel, int type);
 #endif

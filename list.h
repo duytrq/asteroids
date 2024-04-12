@@ -12,7 +12,7 @@ struct OBJECT
    	int Angle;
    	int X,Y,W,H,DIRX,DIRY,Life,size,type;
    	float FX,FY,DX,DY;
-	double velrate;
+	double rotFactor,velrate;
 	Uint32 lastDirchange;
 	OBJECT *next;
 };

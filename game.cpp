@@ -69,7 +69,7 @@ void NewGame(int level)
 {
     gReady = false; addMonster=false;
     int a,e,tDIRX,tDIRY,tSIZE,tX,tY,tType;
-    double tvelrate ; 
+    double tRotate,tDX,tDY;
     if (asteroids != NULL) deleteList(&asteroids);
     if (enemy != NULL) deleteList(&enemy);
     if (projectiles != NULL) deleteList(&projectiles);
@@ -89,22 +89,29 @@ void NewGame(int level)
     srand((unsigned) time(&t));
     for(int i=0;i<level*2;i++)
     {
-        a = rand() % 2;
-        if (a==0) tDIRX = 1;
-        else tDIRX = -1;
-        a = rand() % 2;
-        if (a==0) tDIRY = 1;
-        else tDIRY = -1; 
+        // a = rand() % 2;
+        // if (a==0) tDIRX = 1;
+        // else tDIRX = -1;
+        // a = rand() % 2;
+        // if (a==0) tDIRY = 1;
+        // else tDIRY = -1; 
         tX = rand() % 1280;
         tY = rand() % 720;
+        tDX = (rand()%70)/10 -3.5;
+        tDY = (rand()%70)/10 -3.5;
+        if(tDX>=-2 && tDX<=0) tDX=-2;
+        if(tDY>=-2 && tDY<=0) tDY=-2;
+        if(tDX<= 2 && tDX>=0) tDX= 2;
+        if(tDY<= 2 && tDY>=0) tDY= 2;
         tSIZE = rand() % 3;
-        a = rand() %3;
-        if(a==0) tvelrate = 1.2;
-        else if(a==1) tvelrate = 1.4;
-        else tvelrate = 1.6;
+        tRotate = (rand()%100)/30 + 2;
+        // a = rand() %3;
+        // if(a==0) tvelrate = 1.2;
+        // else if(a==1) tvelrate = 1.4;
+        // else tvelrate = 1.6;
         a = rand() % 3;
         tType = a;
-        addAsteroid(tX,tY,tDIRX, tDIRY, tSIZE, tvelrate, tType);
+        addAsteroid(tX,tY,tDX, tDY, tSIZE, tRotate, tType);
     }
     e = rand() % 2;
     if(e==0) tDIRX = 1;

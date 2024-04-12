@@ -3,7 +3,7 @@
 OBJECT *newelement(OBJECT temp)
 {
 	OBJECT *newp;
-	newp = (OBJECT *) malloc (sizeof(OBJECT));
+	newp = new OBJECT;
 	newp->index = temp.index;
 	newp->Img = temp.Img;
 	newp->X = temp.X;
@@ -20,6 +20,7 @@ OBJECT *newelement(OBJECT temp)
 	newp->Angle = temp.Angle;
 	newp->size = temp.size;
 	newp->velrate = temp.velrate;
+	newp->rotFactor = temp.rotFactor;
 	newp->type = temp.type;
     newp -> next = NULL;
 	return newp;

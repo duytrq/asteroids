@@ -91,6 +91,7 @@ void moveEnemy(Ship &ship)
                     drY/=distance;
                 }
                 if(gReady) {
+                    if(Mix_Playing(7)==0) Mix_PlayChannel(7,eshot,0);
                     LaunchProjectile(p->X,p->Y+p->H/2,drX,drY,mbullet,100,2);
                 }
                 p->lastDirchange = SDL_GetTicks();
@@ -121,6 +122,7 @@ void moveEnemy(Ship &ship)
             if(distance < 150){
                 int blowPosX= p->X;
                 int blowPosY= p->Y;
+                if(Mix_Playing(7)==0) Mix_PlayChannel(7,eshot,0);
                 LaunchBulletCircular(blowPosX,blowPosY,abullet,100,3);
                 deleteObject(&enemy,i,true);
             }

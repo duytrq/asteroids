@@ -51,7 +51,7 @@ void Ship::DisplaySkillTimer()
         DrawText(timeText.str(),"assets/fonts/FreeMonoBold.ttf", 30, 215, 3, 255, 255, 255, 0, 0, 0, true); 
     }
     else{
-        DrawImgRatio(0,630,0.25,icon);
+        DrawImgRatio(20,630,0.5,icon);
         std::stringstream timeText;
         timeText.str(" ");
         if(skillLastUsed==0){
