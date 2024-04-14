@@ -18,7 +18,7 @@ extern SDL_Renderer *gRen;
 extern SDL_Window *gWin;
 extern Uint32 timeTemp;
 extern time_t t;
-extern int points,best;
+extern int points,best,money;
 extern int currLevel;
 extern bool running, gReady;
 extern SDL_Surface *background, *indicator;

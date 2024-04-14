@@ -26,7 +26,7 @@ struct Ship{
     bool skillOnCooldown = false, skillIsActive =false;
     int expticks=0; 
     Timer skillAct,skillCool;
-    const Uint32 skillDuration=2000;
+    Uint32 skillDuration=2000;
     const Uint32 skillCooldown=5000;
     Uint32 skillLastUsed = 0;
     double shipShootTime;

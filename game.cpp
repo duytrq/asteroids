@@ -3,7 +3,7 @@ Ship Player;
 SDL_Event ev;
 bool KeyPressed=false,addMonster;
 long keystate[1000];
-int lastX,lastY,lastAngle;
+int lastX,lastY,lastAngle,maxLives=3;
 void HandleKey(long sym, bool down)
 {
     switch (sym)
@@ -34,31 +34,6 @@ void HandleKey(long sym, bool down)
         keystate[sym]=down;
     }
 }
-void HandleEvents()
-{
-    SDL_Event e;
-    if(SDL_PollEvent(&e))
-    {
-        switch (e.type)
-        {
-            case SDL_QUIT:
-                if (asteroids != NULL) deleteList(&asteroids);
-                running=false;
-                break;
-            case SDL_KEYDOWN:
-                HandleKey(e.key.keysym.sym,true);
-                KeyPressed=true;
-                gReady=true;
-                break;
-            case SDL_KEYUP:
-                HandleKey(e.key.keysym.sym,false);
-                KeyPressed=false;
-                break;
-            default:
-                break;
-        }
-    }
-}
 void ClearKey(){
     for(int i=0;i<1000;i++){
         keystate[i]=0;
@@ -75,7 +50,7 @@ void NewGame(int level)
     if (projectiles != NULL) deleteList(&projectiles);
     Player.skillAct.start();
     Player.explosion=false;
-    if(Player.Lives==0) Player.Lives = 3; 
+    Player.Lives = maxLives; 
     Player.X=200; 
     Player.Y=200;
     lastX=Player.X;
@@ -89,12 +64,6 @@ void NewGame(int level)
     srand((unsigned) time(&t));
     for(int i=0;i<level*2;i++)
     {
-        // a = rand() % 2;
-        // if (a==0) tDIRX = 1;
-        // else tDIRX = -1;
-        // a = rand() % 2;
-        // if (a==0) tDIRY = 1;
-        // else tDIRY = -1; 
         tX = rand() % 1280;
         tY = rand() % 720;
         tDX = (rand()%70)/10 -3.5;
@@ -105,10 +74,6 @@ void NewGame(int level)
         if(tDY<= 2 && tDY>=0) tDY= 2;
         tSIZE = rand() % 3;
         tRotate = (rand()%100)/30 + 2;
-        // a = rand() %3;
-        // if(a==0) tvelrate = 1.2;
-        // else if(a==1) tvelrate = 1.4;
-        // else tvelrate = 1.6;
         a = rand() % 3;
         tType = a;
         addAsteroid(tX,tY,tDX, tDY, tSIZE, tRotate, tType);
