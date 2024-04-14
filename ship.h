@@ -29,6 +29,7 @@ struct Ship{
     Uint32 skillDuration=2000;
     const Uint32 skillCooldown=5000;
     Uint32 skillLastUsed = 0;
+    int shipShootLevel = 1;
     double shipShootTime;
     Ship();
     void Load();

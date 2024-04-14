@@ -45,6 +45,7 @@ void UpdateShop(){
         if(money-price1>=0){
             money-=price1;
             price1+=20;
+            Player.shipShootLevel+=1;
             clicked=false;
         }
     }

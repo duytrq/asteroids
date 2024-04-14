@@ -1,6 +1,6 @@
 #include "projectile.h"
 OBJECT *projectiles = NULL;
-SDL_Surface* bullet,*debris, *mbullet, *abullet,*blackhole,*repair;
+SDL_Surface* bullet,*debris, *mbullet, *abullet,*blackhole,*repair,*coin;
 bool shootspecial=false,bexist=false;
 void loadProjectileIMG()
 {
@@ -10,6 +10,7 @@ void loadProjectileIMG()
     abullet=IMG_Load("assets/images/bullet3.png");
     blackhole=IMG_Load("assets/images/blackhole.png");
     repair=IMG_Load("assets/images/repair.png");
+    coin=IMG_Load("assets/images/goldcoin.png");
 }
 void LaunchProjectile(double X, double Y, double DX, double DY, SDL_Surface *Img, int Life, int type, Ship* ship){
     OBJECT p;
@@ -20,17 +21,47 @@ void LaunchProjectile(double X, double Y, double DX, double DY, SDL_Surface *Img
     } 
     p.Img = Img;
     p.type = type;
+    p.Life = Life;
     if (type == 1) {
     //ship projectile
         p.W = 16;
         p.H = 16;
-        p.Angle = ship->Angle + 90;
-        p.FX = (ship->X +(ship->W-10)/2);
-        p.FY = (ship->Y +(ship->H-30)/2);
-        p.DX = DX;
-        p.DY = DY;
-        p.X = round(p.FX);
-        p.Y = round(p.FY);
+        if(ship->shipShootLevel==1 || shootspecial){
+            p.Angle = ship->Angle + 90;
+            p.FX = (ship->X +(ship->W-10)/2);
+            p.FY = (ship->Y +(ship->H-30)/2);
+            p.DX = DX;
+            p.DY = DY;
+            p.X = round(p.FX);
+            p.Y = round(p.FY);
+        }
+        else if(ship->shipShootLevel==2 && !shootspecial){
+            p.Angle = ship->Angle+80;
+            p.FX = (ship->X +(ship->W-10)/2);
+            p.FY = (ship->Y +(ship->H-30)/2);
+            p.DX = DX;
+            p.DY = DY;
+            p.X = round(p.FX);
+            p.Y = round(p.FY);
+            projectiles=addend(projectiles, newelement(p)); 
+            p.index++;
+            p.Angle = ship->Angle+100;
+        }
+        else if(ship->shipShootLevel==3 && !shootspecial){
+            p.Angle = ship->Angle+80;
+            p.FX = (ship->X +(ship->W-10)/2);
+            p.FY = (ship->Y +(ship->H-30)/2);
+            p.DX = DX;
+            p.DY = DY;
+            p.X = round(p.FX);
+            p.Y = round(p.FY);
+            projectiles=addend(projectiles, newelement(p)); 
+            p.index++;
+            p.Angle = ship->Angle+100;
+            projectiles=addend(projectiles, newelement(p)); 
+            p.index++;
+            p.Angle = ship->Angle + 90;
+        }
     } 
     if (type ==0){
         p.W = 16;
@@ -79,7 +110,6 @@ void LaunchProjectile(double X, double Y, double DX, double DY, SDL_Surface *Img
         p.Y = Y;
         p.Angle = 0;
     }
-    p.Life = Life;
     projectiles=addend(projectiles, newelement(p)); 
 } 
 void DrawProjectile()
@@ -92,7 +122,6 @@ void DrawProjectile()
 }
 void moveProjectile(Ship &ship)
 {
-    srand((unsigned) time(&t));
     OBJECT *p;
     bool bCol=false;
     for(int i=0;i<length(&projectiles);i++)
@@ -132,6 +161,14 @@ void moveProjectile(Ship &ship)
             p->FY+= p->DY/2;
             p->X=round(p->FX);
             p->Y=round(p->FY);
+            double DIRX,DIRY,distance;
+            DIRX=ship.X-p->X;
+            DIRY=ship.Y-p->Y;
+            distance=sqrt(DIRX*DIRX+DIRY*DIRY);
+            if(distance<100){
+                p->DX=10*DIRX/distance;
+                p->DY=10*DIRY/distance;
+            }
         }
         if(p->type ==5){
             p->Angle+=5;
@@ -158,6 +195,7 @@ void moveProjectile(Ship &ship)
             else{
                 if(p->Img==blackhole) shootspecial=true;
                 if(p->Img==repair) ship.Lives++;
+                if(p->Img==coin) money++;
             }
             deleteObject(&projectiles,i,true);
         }
@@ -199,12 +237,17 @@ void moveProjectile(Ship &ship)
                     deleteObject(&asteroids, j, true);
                     if(p->Img != debris) points+=30;
                 }
-                if(rand()%10==1){
+                double rate=shouldDrop();
+                if(rate<0.1){
                     LaunchProjectile(p->X,p->Y,1,-1,blackhole,250,4);
                 }
-                else if(rand()%10==0){
+                else if(rate<0.2){
                     LaunchProjectile(p->X,p->Y,1,-1,repair,250,4);
                 }
+                else if(rate<0.5){
+                    LaunchProjectile(p->X,p->Y,1,-1,coin,250,4);
+                }
+                rate=1;
                 if(p->type==1 && p->Img==blackhole)
                 {
                     LaunchProjectile(p->X,p->Y,0,0,blackhole,100,5);
@@ -222,8 +265,9 @@ void ShipShoot(Ship *ship)
     if(SDL_GetTicks()-ship->shipShootTime>=200 )
     { 
         Mix_PlayChannel(2, shot, 0);
-        if(!shootspecial){
+        if(!shootspecial){          
             LaunchProjectile(ship->X+16,ship->Y-2,15,15,bullet,-1,1,ship);
+            std::cout<<ship->shipShootLevel<<std::endl;
         }
         else{
             LaunchProjectile(ship->X+16,ship->Y-2,20,20,blackhole,-1,1,ship);
@@ -253,4 +297,10 @@ void LaunchBulletCircular(int X, int Y, SDL_Surface* Img, int life, int type)
     LaunchProjectile(X, Y, -0.71, -0.71, Img,life,type);
     LaunchProjectile(X, Y, 0, -1, Img,life,type);
     LaunchProjectile(X, Y, 0.71, -0.71, Img,life,type);
+}
+double shouldDrop()
+{
+    srand((unsigned) time(&t));
+    double randValue = (double) (rand()%100);
+    return randValue/100;
 }

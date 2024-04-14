@@ -119,6 +119,7 @@ void GameLoop()
                         if(newgame){
                             points = 0;
                             money = 0;
+                            Player.shipShootLevel = 1;
                             currLevel = 1;
                             ClearKey();
                             NewGame(currLevel);
