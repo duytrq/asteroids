@@ -4,6 +4,7 @@ SDL_Event ev;
 bool KeyPressed=false,addMonster;
 long keystate[1000];
 int lastX,lastY,lastAngle,maxLives=3;
+int price1=10,price2=10,price3=10;
 void HandleKey(long sym, bool down)
 {
     switch (sym)
@@ -161,10 +162,16 @@ void UpdateGame()
     }
 }
 void SaveGame(){
+    std::ofstream game("game.txt", std::ios::out | std::ios::trunc);
+    if(game.is_open()){
+        game << currLevel << " "<<points<< " "<<money<<" "<<price1<<" "<<price2<<" "<<price3<<" "<<maxLives;
+        game.close();
+    }
     std::ofstream ship("ship.txt", std::ios::out | std::ios::trunc);
     if(ship.is_open())
     {
-        ship << Player.X <<" "<< Player.Y<<" " << Player.VX<<" " << Player.VY<<" " << Player.W<<" "<<Player.H<<" "<<Player.Angle<<" "<<Player.Lives;
+        ship << Player.X <<" "<< Player.Y<<" "<< Player.VX<<" " << Player.VY<<" " << Player.W<<" "
+        <<Player.H<<" "<<Player.Angle<<" "<<Player.Lives<<" "<<Player.shipShootLevel<<" "<<Player.skillDuration;
         ship.close();
     }
     std::ofstream asteroid("asteroids.txt", std::ios::out | std::ios::trunc);
@@ -173,7 +180,6 @@ void SaveGame(){
         for(int i=0;i<length(&asteroids);i++){
             OBJECT *p;
             p=getObject(asteroids,i);
-            std::cout<<i<<" ";
             //addAsteroid(tX,tY,tDX, tDY, tSIZE, tRotate, tType);
             asteroid << p->X << " "<<p->Y<<" "<<p->DX<<" "<<p->DY<<" "<<p->size<<" "<<p->rotFactor<<" "<<p->type<<'\n';
         }
@@ -185,10 +191,43 @@ void SaveGame(){
         for(int i=0;i<length(&enemy);i++){
             OBJECT *p;
             p=getObject(enemy,i);
-            std::cout<<i<<" ";
+            //std::cout<<i<<" ";
             // void addEnemy(int X,int Y,int DIRX, int DIRY,int type)
             enemies << p->X << " "<<p->Y<<" "<<p->DIRX<<" "<<p->DIRY<<" "<<p->type<<'\n';
         }
         enemies.close();
     }
+}
+void LoadGame(){
+    gReady = false;
+    std::fstream game("game.txt");
+    if(game.is_open()){
+        game >> currLevel >>points >> money >>price1 >>price2 >>price3>>maxLives;
+        game.close();
+    }
+    std::fstream ship("ship.txt");
+    if(ship.is_open()){
+        ship >> Player.X >> Player.Y>> Player.VX>> Player.VY>> Player.W>>Player.H
+        >>Player.Angle>>Player.Lives>>Player.shipShootLevel>>Player.skillDuration;
+        ship.close();
+    }
+    std::fstream asteroid("asteroids.txt");
+    if(asteroid.is_open()){
+        int tX,tY,tSize,tType;
+        double tDX, tDY, tRotate;
+        while(asteroid >> tX >> tY >> tDX >> tDY>> tSize >> tRotate>> tType)
+        {
+            addAsteroid(tX,tY,tDX, tDY, tSize, tRotate, tType);
+        }
+        asteroid.close();
+    }
+    std::fstream enemies("enemy.txt");
+    if (enemies.is_open()) {
+        int tX, tY, tDIRX, tDIRY, tType;
+        while (enemies >> tX >> tY >> tDIRX >> tDIRY >> tType) {
+            addEnemy(tX, tY, tDIRX, tDIRY, tType);
+        }
+        enemies.close();
+    }
+
 }

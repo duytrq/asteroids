@@ -1,6 +1,6 @@
 #include "Shop.h"
 bool paused=false,clicked=false;
-int cursorState=0,price1=10,price2=10,price3=10;
+int cursorState=0;
 SDL_Surface *shop,*cursor;
 int ProcessingCursorLocation(int mouseX, int mouseY)
 {

@@ -10,10 +10,11 @@ extern Ship Player;
 extern SDL_Event ev;
 extern bool KeyPressed,addMonster;
 extern long keystate[1000];
-extern int lastX,lastY,lastAngle,maxLives;
+extern int lastX,lastY,lastAngle,maxLives,price1,price2,price3;
 void HandleKey(long sym, bool down);
 void NewGame(int level);
 void UpdateGame();
 void ClearKey();
 void SaveGame();
+void LoadGame();
 #endif

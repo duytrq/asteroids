@@ -12,7 +12,8 @@ int main(int argc, char* argv[])
     InitAudio();
     loadAssets();
     Intro();
-    NewGame(currLevel);
+    if(!loadgame) NewGame(currLevel);
+    else LoadGame();
     GameLoop();
     if(Player.Lives!=0) SaveGame();
     Clean();

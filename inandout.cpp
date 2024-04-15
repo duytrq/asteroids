@@ -1,5 +1,6 @@
 #include "inandout.h"
 bool newgame = false;
+bool loadgame = false;
 void Intro()
 {
     std::fstream file("highscores.txt");
@@ -28,12 +29,12 @@ void Intro()
     helpStr1 = "CONTROLS: ";
     helpStr2 = "^: UP  v: DOWN <- : LEFT  -> : RIGHT | SPACE : SHOOT ";
     helpStr3 = "ESC: EXIT";
-    helpStr4 = "PRESS ANY KEY TO START";
+    helpStr4 = "PRESS N TO START NEW GAME, PRESS L TO LOAD PREVIOUS GAME";
     DrawText(helpStr0,"assets/fonts/FreeMonoBold.ttf", 12, 460,300,105,105, 105, 0, 0, 0,true); 
     DrawText(helpStr1,"assets/fonts/FreeMonoBold.ttf", 16, 360,560,255,255, 255, 0, 0, 0,true); 
     DrawText(helpStr2,"assets/fonts/FreeMonoBold.ttf", 18, 360,600,255,255, 255, 0, 0, 0,true); 
     DrawText(helpStr3,"assets/fonts/FreeMonoBold.ttf", 18, 360,640,255,255, 255, 0, 0, 0,true); 
-    DrawText(helpStr4,"assets/fonts/FreeMonoBold.ttf", 22, 500,460,255,255, 255, 0, 0, 0,true); 
+    DrawText(helpStr4,"assets/fonts/FreeMonoBold.ttf", 22, 300,460,255,255, 255, 0, 0, 0,true); 
     DrawText(bestScores,"assets/fonts/FreeMonoBold.ttf", 22, 1000,280,255,255, 255, 0, 0, 0,true, -25);
     SDL_RenderPresent(gRen);
 
@@ -44,7 +45,18 @@ void Intro()
                 break;
             }    
             if (e.type == SDL_KEYDOWN){
-            keyflag = true;
+                switch (e.key.keysym.sym)
+                {
+                case SDLK_l:
+                    keyflag = true;
+                    loadgame = true;
+                    break;
+                case SDLK_n:
+                    keyflag = true;
+                    break;
+                default:
+                    break;
+                }
             }
         }
 
