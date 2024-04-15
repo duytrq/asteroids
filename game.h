@@ -15,4 +15,5 @@ void HandleKey(long sym, bool down);
 void NewGame(int level);
 void UpdateGame();
 void ClearKey();
+void SaveGame();
 #endif

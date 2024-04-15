@@ -61,22 +61,6 @@ void deleteList(OBJECT **head)
 
    *tracer = NULL;
 } 
-
-
-// updatelement: remove from list the first instance of an element 
-OBJECT *update(OBJECT *head, int index, OBJECT temp)
-{
-	OBJECT *p;
-	for (p = head; p != NULL; p = p -> next) {
-            if (p -> index == index) {
-		break;
-	   }
-	}
-	 p-> index = temp.index;	
-	 return head;
-	
-}
-
 // getObject 
 OBJECT *getObject(OBJECT *head, int index)
 {
@@ -107,12 +91,6 @@ OBJECT *delelement(OBJECT *head, int index)
 	}
   return NULL;
 }
-
-OBJECT *addfront(OBJECT *head, OBJECT *newp)
-{
-	newp -> next = head;
-	return newp;
-}
 OBJECT *addend (OBJECT *head, OBJECT *newp)
 {
 	OBJECT *p2; 	
@@ -123,16 +101,6 @@ OBJECT *addend (OBJECT *head, OBJECT *newp)
 	p2 -> next = newp;
 	return head;
 }
-
-void printlist(OBJECT **head)
-{
-	OBJECT **tracer = head;
-	  while ((*tracer) != NULL) {
-		printf("%d \n",(*tracer)->index);
-		tracer = &(*tracer)->next;
-	  }  
-}
-
 int length(OBJECT **head)
 {
 

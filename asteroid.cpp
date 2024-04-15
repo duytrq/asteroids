@@ -23,15 +23,12 @@ void addAsteroid(int X,int Y,int DX, int DY, int size, double rotation,int type)
 {
     OBJECT temp;
     temp.index = length(&asteroids);
-    // temp.DIRX = DIRX;
-    // temp.DIRY = DIRY;
     temp.X = X;
     temp.Y = Y;
     temp.DX = DX;
     temp.DY = DY;
     temp.size=size;
     temp.rotFactor = rotation;
-    //std::cout<<temp.velrate<<std::endl;
     if (temp.size==0){
         temp.W = ASTH0;
         temp.H = ASTW0;
@@ -84,12 +81,8 @@ void moveAsteroid(Ship &ship)
                 deleteObject(&asteroids, i, true);
             }
         }
-        // p->DX=p->DX + (p->velrate * p->DIRX);
-        // p->DY=p->DY + (p->velrate * p->DIRY);
         p->X = round(p->X+p->DX);
         p->Y = round(p->Y+p->DY);
-        // p->X=p->DX;
-        // p->Y=p->DY;
         p->Angle+=p->rotFactor;
         if(p->X < -10){p->X = SCREEN_W;}
         if(p->X > SCREEN_W){p->X=0;}

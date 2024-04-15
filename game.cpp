@@ -160,3 +160,35 @@ void UpdateGame()
         NewGame(currLevel);
     }
 }
+void SaveGame(){
+    std::ofstream ship("ship.txt", std::ios::out | std::ios::trunc);
+    if(ship.is_open())
+    {
+        ship << Player.X <<" "<< Player.Y<<" " << Player.VX<<" " << Player.VY<<" " << Player.W<<" "<<Player.H<<" "<<Player.Angle<<" "<<Player.Lives;
+        ship.close();
+    }
+    std::ofstream asteroid("asteroids.txt", std::ios::out | std::ios::trunc);
+    if(asteroid.is_open())
+    {
+        for(int i=0;i<length(&asteroids);i++){
+            OBJECT *p;
+            p=getObject(asteroids,i);
+            std::cout<<i<<" ";
+            //addAsteroid(tX,tY,tDX, tDY, tSIZE, tRotate, tType);
+            asteroid << p->X << " "<<p->Y<<" "<<p->DX<<" "<<p->DY<<" "<<p->size<<" "<<p->rotFactor<<" "<<p->type<<'\n';
+        }
+        asteroid.close();
+    }
+    std::ofstream enemies("enemy.txt", std::ios::out | std::ios::trunc);
+    if(enemies.is_open())
+    {
+        for(int i=0;i<length(&enemy);i++){
+            OBJECT *p;
+            p=getObject(enemy,i);
+            std::cout<<i<<" ";
+            // void addEnemy(int X,int Y,int DIRX, int DIRY,int type)
+            enemies << p->X << " "<<p->Y<<" "<<p->DIRX<<" "<<p->DIRY<<" "<<p->type<<'\n';
+        }
+        enemies.close();
+    }
+}

@@ -7,7 +7,7 @@ SDL_Surface* background , *indicator;
 time_t t;
 Uint32 timeTemp=0;
 int points=0,best = 0;
-int money=50;
+int money=0;
 int currLevel = 1;
 Mix_Music *theme = NULL;
 Mix_Chunk *sound = NULL, *intro = NULL, *shot = NULL, *expsnd = NULL, *shield = NULL, *crash = NULL, *hit=NULL, *eshot=NULL;

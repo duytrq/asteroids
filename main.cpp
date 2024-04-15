@@ -14,6 +14,7 @@ int main(int argc, char* argv[])
     Intro();
     NewGame(currLevel);
     GameLoop();
+    if(Player.Lives!=0) SaveGame();
     Clean();
 }
 
@@ -50,7 +51,6 @@ void HandleEvents()
         switch (e.type)
         {
             case SDL_QUIT:
-                if (asteroids != NULL) deleteList(&asteroids);
                 running=false;
                 break;
             case SDL_KEYDOWN:
