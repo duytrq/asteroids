@@ -16,6 +16,7 @@ int main(int argc, char* argv[])
     else LoadGame();
     GameLoop();
     if(Player.Lives!=0) SaveGame();
+    GameClean();
     Clean();
 }
 
@@ -122,6 +123,8 @@ void GameLoop()
                             money = 0;
                             Player.shipShootLevel = 1;
                             currLevel = 1;
+                            price1 = 10,price2=10,price3=10;
+                            money = 0;
                             ClearKey();
                             NewGame(currLevel);
                         }

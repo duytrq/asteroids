@@ -49,7 +49,7 @@ void NewGame(int level)
     if (asteroids != NULL) deleteList(&asteroids);
     if (enemy != NULL) deleteList(&enemy);
     if (projectiles != NULL) deleteList(&projectiles);
-    Player.skillAct.start();
+    if(!Player.skillAct.isStarted()) Player.skillAct.start();
     Player.explosion=false;
     Player.Lives = maxLives; 
     Player.X=200; 
@@ -79,16 +79,17 @@ void NewGame(int level)
         tType = a;
         addAsteroid(tX,tY,tDX, tDY, tSIZE, tRotate, tType);
     }
-    e = rand() % 2;
-    if(e==0) tDIRX = 1;
-    else tDIRX = -1;
-    e = rand() % 2;
-    if(e==0) tDIRY = 1;
-    else tDIRY = -1;
-    tX = rand() % 1280;
-    tY = rand() % 720;
-    e = rand()%2 +1;
-    addEnemy(tX,tY,tDIRX,tDIRY,1);
+    if(currLevel>=3)
+        {e = rand() % 2;
+        if(e==0) tDIRX = 1;
+        else tDIRX = -1;
+        e = rand() % 2;
+        if(e==0) tDIRY = 1;
+        else tDIRY = -1;
+        tX = rand() % 1280;
+        tY = rand() % 720;
+        e = rand()%2 +1;
+        addEnemy(tX,tY,tDIRX,tDIRY,1);}
     Mix_PlayMusic(theme, -1);
 }
 void UpdateGame()
@@ -130,7 +131,7 @@ void UpdateGame()
     {
         int e,tX,tY,tDIRX,tDIRY;
         double dirX,dirY,distance;
-        for(int i=0;i<currLevel;i++){
+        for(int i=0;i<currLevel/2;i++){
             e = rand() % 2;
             if(e==0) tDIRX = 1;
             else tDIRX = -1;
@@ -199,7 +200,8 @@ void SaveGame(){
     }
 }
 void LoadGame(){
-    gReady = false;
+    gReady = false; Uint32 skillTime;
+    Player.skillAct.start();
     std::fstream game("game.txt");
     if(game.is_open()){
         game >> currLevel >>points >> money >>price1 >>price2 >>price3>>maxLives;
@@ -207,7 +209,7 @@ void LoadGame(){
     }
     std::fstream ship("ship.txt");
     if(ship.is_open()){
-        ship >> Player.X >> Player.Y>> Player.VX>> Player.VY>> Player.W>>Player.H
+        ship >>Player.X>>Player.Y>>Player.VX>>Player.VY>>Player.W>>Player.H
         >>Player.Angle>>Player.Lives>>Player.shipShootLevel>>Player.skillDuration;
         ship.close();
     }
@@ -229,5 +231,10 @@ void LoadGame(){
         }
         enemies.close();
     }
-
+}
+void GameClean()
+{
+    if(asteroids!=NULL) deleteList(&asteroids);
+    if(projectiles!=NULL) deleteList(&projectiles);
+    if(enemy!=NULL) deleteList(&enemy);
 }

@@ -83,7 +83,17 @@ Uint32 Timer::getTicks()
 
     return time;
 }
+void Timer::startWithTime(Uint32 startTime)
+{
+    mStarted = true;
 
+    //Unpause the timer
+    mPaused = false;
+
+    //Get the current clock time
+    mStartTicks = startTime;
+    mPausedTicks = startTime;
+}
 bool Timer::isStarted()
 {
 	//Timer is running and paused or unpaused

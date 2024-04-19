@@ -17,4 +17,5 @@ void UpdateGame();
 void ClearKey();
 void SaveGame();
 void LoadGame();
+void GameClean();
 #endif

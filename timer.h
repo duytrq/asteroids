@@ -12,14 +12,14 @@ class Timer
 		void stop();
 		void pause();
 		void unpause();
-
+		void startWithTime(Uint32 startTime);
 		//Gets the timer's time
 		Uint32 getTicks();
 
 		//Checks the status of the timer
 		bool isStarted();
 		bool isPaused();
-
+		
     private:
 		//The clock time when the timer started
 		Uint32 mStartTicks;

@@ -181,7 +181,7 @@ void moveProjectile(Ship &ship)
         }
         SDL_Rect rShip = ship.HitBox();
         SDL_Rect pj=getRect(p);
-        if(p->type >=2 && Collided(pj, rShip)){
+        if(p->type >=2 && p->type!=5 && Collided(pj, rShip)){
             if(p->type!=4){
                 if(!ship.skillIsActive){
                     ship.Damaged();

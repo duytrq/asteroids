@@ -81,7 +81,7 @@ void moveEnemy(Ship &ship)
             }
         }
         if(p->type==1){
-            if(SDL_GetTicks()-(p->lastDirchange)>2000){
+            if(SDL_GetTicks()-(p->lastDirchange)>3000){
                 if(rand()%2) p->DIRY*=-1;
                 double drX = ship.X - p->X;
                 double drY = ship.Y - p->Y;
