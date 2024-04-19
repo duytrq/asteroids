@@ -1,9 +1,10 @@
 #include "enemy.h"
 OBJECT* enemy =NULL;
-SDL_Surface* monster,*alien;
+SDL_Surface* monster,*alien,*alienskill;
 void loadEnemyIMG(){
     monster = IMG_Load("assets/images/enemy.png");
     alien = IMG_Load("assets/images/enemy1.png");
+    alienskill = IMG_Load("assets/images/enemy3.png");
 }
 
 void addEnemy(int X,int Y,int DIRX, int DIRY,int type)
@@ -74,6 +75,7 @@ void moveEnemy(Ship &ship)
             if(q->Life==-1){
                 SDL_Rect pj = getRect(q);
                 if(Collided(pj,rEnemy)){
+                    if(p->type==1) ship.stupidmove=false;
                     deleteObject(&enemy, i, true);
                     deleteObject(&projectiles, j, true);
                     break;
@@ -81,7 +83,7 @@ void moveEnemy(Ship &ship)
             }
         }
         if(p->type==1){
-            if(SDL_GetTicks()-(p->lastDirchange)>3000){
+            if(SDL_GetTicks()-(p->lastDirchange)>4000){
                 if(rand()%2) p->DIRY*=-1;
                 double drX = ship.X - p->X;
                 double drY = ship.Y - p->Y;
@@ -90,21 +92,31 @@ void moveEnemy(Ship &ship)
                     drX/=distance;
                     drY/=distance;
                 }
-                if(gReady) {
+                if(gReady && p->skill1) {
                     if(Mix_Playing(7)==0) Mix_PlayChannel(7,eshot,0);
                     LaunchProjectile(p->X,p->Y+p->H/2,drX,drY,mbullet,100,2);
                 }
+                if(gReady && p->skill2) {
+                    ship.stupidmove = true;
+                    p->Img = alienskill;
+                }
+                p->skill1=!p->skill1;
+                p->skill2=!p->skill2;
                 p->lastDirchange = SDL_GetTicks();
-
             }
-            p->DX=p->DX + p->velrate*p->DIRX;
-            p->DY=p->DY + p->velrate*p->DIRY;
-            p->X = round(p->DX);
-            p->Y = round(p->DY);
-            if(p->X < -10){p->X = SCREEN_W;p->DX = SCREEN_W;}
-            if(p->X > SCREEN_W){p->X=0;p->DX=0;}
-            if(p->Y < -10){p->Y = SCREEN_H;p->DY = SCREEN_H;}
-            if(p->Y > SCREEN_H){p->Y=0;p->DY=0;}
+            if(SDL_GetTicks()-(p->lastDirchange)>2000){
+                ship.stupidmove = false;
+                p->Img = alien;
+            }
+            if(p->Img == alien)
+                {p->DX=p->DX + p->velrate*p->DIRX;
+                p->DY=p->DY + p->velrate*p->DIRY;
+                p->X = round(p->DX);
+                p->Y = round(p->DY);
+                if(p->X < -10){p->X = SCREEN_W;p->DX = SCREEN_W;}
+                if(p->X > SCREEN_W){p->X=0;p->DX=0;}
+                if(p->Y < -10){p->Y = SCREEN_H;p->DY = SCREEN_H;}
+                if(p->Y > SCREEN_H){p->Y=0;p->DY=0;}}
         }
         if(p->type==2 && gReady){
             double drX = ship.X - p->X;

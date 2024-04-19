@@ -4,7 +4,7 @@
 #include "DrawFunc.h"
 #include "projectile.h"
 extern OBJECT* enemy;
-extern SDL_Surface* monster,*alien;
+extern SDL_Surface* monster,*alien,*alienskill;
 void loadEnemyIMG();
 void addEnemy(int X,int Y,int DIRX, int DIRY, int type);
 void drawEnemy();

@@ -33,7 +33,7 @@ Asteroid Shooter là một trò chơi bắn súng không gian có nhịp độ n
     + Thao tác với string,linked list để xử lý dữ liệu.
     + Thao tác trên file: nhập, xuất, ghi đè.
     + Lồng ghép yếu tố Toán học (vector2d, lượng giác) và Vật lý (gia tốc, quán tính).
-## Demo
-[here]()
+## Demo 
+[here](https://drive.google.com/file/d/1UTKwokzxa5fQG9hYbU2F37P00huXxF3o/view?usp=sharing)
 
 

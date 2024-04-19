@@ -23,6 +23,7 @@ struct Ship{
     enum SHIPSTATE ShipState;
     bool shipstill=false;
     bool explosion=false;
+    bool stupidmove = false;
     bool skillOnCooldown = false, skillIsActive =false;
     int expticks=0; 
     Timer skillAct,skillCool;

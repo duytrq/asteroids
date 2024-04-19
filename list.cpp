@@ -40,12 +40,12 @@ void RemoveThing(OBJECT **head, int index)
 	{
 		old = *tracer;
 		*tracer = (*tracer)->next;
-		free(old); // free up remainder of list element 
+		free(old); 
 	}
 }
 void deleteList(OBJECT **head) 
 { 
-   /* deref head_ref to get the real head */
+
    OBJECT *current = *head; 
    OBJECT *next = NULL;
    OBJECT **tracer=head; 
@@ -56,9 +56,6 @@ void deleteList(OBJECT **head)
        current = next; 
    } 
     
-   /* deref head_ref to affect the real head back 
-      in the caller. */
-
    *tracer = NULL;
 } 
 // getObject 

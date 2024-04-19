@@ -13,6 +13,7 @@ struct OBJECT
    	int X,Y,W,H,DIRX,DIRY,Life,size,type;
    	float FX,FY,DX,DY;
 	double rotFactor,velrate;
+	bool skill1 = true, skill2 = false;
 	Uint32 lastDirchange;
 	OBJECT *next;
 };

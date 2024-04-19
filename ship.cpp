@@ -103,13 +103,19 @@ void Ship::move()
 {
     float xN = static_cast<float>(sinwithdegree(Angle));
     float yN = static_cast<float>(coswithdegree(Angle));
- 
-    VX += xN * accFactor;
-    VY -= yN * accFactor;
+    if(stupidmove){
+        VX += xN * accFactor * -1;
+        VY -= yN * accFactor * -1;
+    }
+    else{
+        VX += xN * accFactor;
+        VY -= yN * accFactor;
+    }
 }
 void Ship::rotateBy(float D){
     float temp;
     if (Mix_Playing(1) == 0) Mix_PlayChannel( 1, sound, 0);
+    if(stupidmove) D*=-1;
     if(fabs(Angle + D) < 181) 
     {
         temp = Angle + D;
