@@ -32,4 +32,6 @@ void Clean();
 double sinwithdegree(int degree);
 double coswithdegree(int degree);
 SDL_Rect getRect(OBJECT *obj);
+bool lerp(double *value, Uint32 *time, int ms);
+void timer(int *ticks, double *time, int ms);
 #endif
