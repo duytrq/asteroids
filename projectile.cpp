@@ -64,6 +64,7 @@ void LaunchProjectile(double X, double Y, double DX, double DY, SDL_Surface *Img
         }
     } 
     if (type ==0){
+        //debris
         p.W = 16;
         p.H = 16;
         p.X = X;
@@ -74,6 +75,7 @@ void LaunchProjectile(double X, double Y, double DX, double DY, SDL_Surface *Img
         p.DY = DY;
     }
     if (type ==2){
+        //alien bullet
         p.W = 20;
         p.H = 20;
         p.X = X;
@@ -84,6 +86,7 @@ void LaunchProjectile(double X, double Y, double DX, double DY, SDL_Surface *Img
         p.DY = DY;
     }
     if (type ==3){
+        //monster blood
         p.W = 16;
         p.H = 16;
         p.X = X;
@@ -94,6 +97,7 @@ void LaunchProjectile(double X, double Y, double DX, double DY, SDL_Surface *Img
         p.DY = DY;
     }
     if (type == 4){
+        //drop item
         p.W = 32;
         p.H = 32;
         p.X = X;
@@ -104,6 +108,7 @@ void LaunchProjectile(double X, double Y, double DX, double DY, SDL_Surface *Img
         p.DY = DY;
     }
     if (type ==5){
+        //blackhole
         p.W = 200;
         p.H = 200;
         p.X = X;
@@ -127,35 +132,35 @@ void moveProjectile(Ship &ship)
     for(int i=0;i<length(&projectiles);i++)
     {
         p=getObject(projectiles,i);
-        if(p->type == 1)
+        if(p->type == 1) //player bullet
         {
             p->FX+= (p->DX *coswithdegree(p->Angle))*-1;
             p->FY+= (p->DY *sinwithdegree(p->Angle))*-1;
             p->X=round(p->FX);
             p->Y=round(p->FY);
         }
-        if(p->type == 0)
+        if(p->type == 0) //debris
         {
             p->FX+= p->DX;
             p->FY+= p->DY;
             p->X=round(p->FX);
             p->Y=round(p->FY);
         }
-        if(p->type == 2)
+        if(p->type == 2) //alien bullet
         {
             p->FX+= 10*p->DX;
             p->FY+= 10*p->DY;
             p->X=round(p->FX);
             p->Y=round(p->FY);
         }
-        if(p->type ==3)
+        if(p->type ==3) //monster blood
         {
             p->FX+= 5*p->DX;
             p->FY+= 5*p->DY;
             p->X=round(p->FX);
             p->Y=round(p->FY);
         }
-        if(p->type ==4)
+        if(p->type ==4) //items
         {
             p->FX+= p->DX/2;
             p->FY+= p->DY/2;
