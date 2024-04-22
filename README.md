@@ -25,7 +25,7 @@ Asteroid Shooter là một trò chơi bắn súng không gian có nhịp độ n
 3. Mở file .exe để chơi.
 
 ## Tự đánh giá
-- Mức điểm kì vọng: 8
+- Mức điểm kì vọng: 8 - 8.5
 - Lý do:
     + Đã sử dụng các kiến thực lập trình cơ bản: khối điều kiện, vòng lặp, con trỏ, class ...
     + Sử dụng thư viện SDL2, SDL2_image, SDL2_ttf, SDL2_mixer để xử lý đồ họa, âm thanh.
