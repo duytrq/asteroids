@@ -76,15 +76,13 @@ OBJECT *delelement(OBJECT *head, int index)
 	OBJECT *p, *prev;
 	prev = NULL;
 	for (p = head; p != NULL; p = p -> next) {
-            if (p -> index == index) {
-		if(prev == NULL)
-		   head = p-> next;
-		else
-		   prev -> next = p -> next;
-		free(p);	
-		return head;
-	   }
-	   prev = p;	
+    	if (p -> index == index) {
+			if(prev == NULL) head = p-> next;
+			else prev -> next = p -> next;
+			free(p);	
+			return head;
+	   	}
+	   	prev = p;	
 	}
   return NULL;
 }
@@ -123,12 +121,12 @@ void reindex(OBJECT **head)
 }
 
 void deleteObject(OBJECT **head,int index, bool sort){
-   OBJECT *p=*head;
-  if (index == 0 || length(head) <=1 || p->index == index )
-    RemoveThing(head,index);
-  else 
-    delelement(*head,index);
-  if (sort == true) reindex(head); 
+	OBJECT *p=*head;
+  	if (index == 0 || length(head) <=1 || p->index == index )
+    	RemoveThing(head,index);
+  	else 
+    	delelement(*head,index);
+  	if (sort == true) reindex(head); 
 }
 bool Collided(SDL_Rect a, SDL_Rect b)
 {

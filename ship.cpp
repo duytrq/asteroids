@@ -101,8 +101,8 @@ void Ship::DrawToScreen()
 }
 void Ship::move()
 {
-    float xN = static_cast<float>(sinwithdegree(Angle));
-    float yN = static_cast<float>(coswithdegree(Angle));
+    float xN = (float) (sinwithdegree(Angle));
+    float yN = (float) (coswithdegree(Angle));
     if(stupidmove){
         VX += xN * accFactor * -1;
         VY -= yN * accFactor * -1;
